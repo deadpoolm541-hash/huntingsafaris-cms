@@ -1,0 +1,51 @@
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center py-3 bg-[#FCFAF7] dark:bg-[#1B2B22] border-t border-[#D1CDC7] dark:border-[#2D3A32]">
+    <a class="flex flex-col items-center justify-center <%= activePage==='home' ? 'text-[#1B2B22] dark:text-[#FCFAF7] font-bold scale-90' : 'text-[#7C7874] dark:text-[#A19E9A] hover:bg-[#F2EFE9] dark:hover:bg-[#2D3A32]' %> rounded p-2 transition-colors w-16 duration-150" href="index.html">
+        <span class="material-symbols-outlined mb-1" <%= activePage==='home' ? 'style="font-variation-settings: \'FILL\' 1;"' : '' %>>landscape</span>
+        <span class="font-sans text-[10px] font-medium uppercase tracking-tighter">Home</span>
+    </a>
+    <a class="flex flex-col items-center justify-center <%= activePage==='services' ? 'text-[#1B2B22] dark:text-[#FCFAF7] font-bold scale-90' : 'text-[#7C7874] dark:text-[#A19E9A] hover:bg-[#F2EFE9] dark:hover:bg-[#2D3A32]' %> rounded p-2 transition-colors w-16 duration-150" href="services.html">
+        <span class="material-symbols-outlined mb-1" <%= activePage==='services' ? 'style="font-variation-settings: \'FILL\' 1;"' : '' %>>confirmation_number</span>
+        <span class="font-sans text-[10px] font-medium uppercase tracking-tighter">Packages</span>
+    </a>
+    <a class="flex flex-col items-center justify-center <%= activePage==='gallery' ? 'text-[#1B2B22] dark:text-[#FCFAF7] font-bold scale-90' : 'text-[#7C7874] dark:text-[#A19E9A] hover:bg-[#F2EFE9] dark:hover:bg-[#2D3A32]' %> rounded p-2 transition-colors w-16 duration-150" href="gallery.html">
+        <span class="material-symbols-outlined mb-1" <%= activePage==='gallery' ? 'style="font-variation-settings: \'FILL\' 1;"' : '' %>>photo_library</span>
+        <span class="font-sans text-[10px] font-medium uppercase tracking-tighter">Gallery</span>
+    </a>
+    <a class="flex flex-col items-center justify-center <%= activePage==='contact' ? 'text-[#1B2B22] dark:text-[#FCFAF7] font-bold scale-90' : 'text-[#7C7874] dark:text-[#A19E9A] hover:bg-[#F2EFE9] dark:hover:bg-[#2D3A32]' %> rounded p-2 transition-colors w-16 duration-150" href="contact.html">
+        <span class="material-symbols-outlined mb-1" <%= activePage==='contact' ? 'style="font-variation-settings: \'FILL\' 1;"' : '' %>>mail</span>
+        <span class="font-sans text-[10px] font-medium uppercase tracking-tighter">Contact</span>
+    </a>
+</nav>
+<footer class="bg-[#1B2B22] dark:bg-black py-16 relative overflow-hidden">
+    <div class="absolute inset-0 flex justify-center items-center pointer-events-none select-none opacity-10">
+        <img src="<%= global.logo %>" alt="Logo" class="h-96 w-auto object-contain">
+    </div>
+    <div class="relative z-10 grid grid-cols-2 md:grid-cols-[1fr_auto_auto] items-start gap-y-12 gap-x-6 md:gap-24 px-8 sm:px-12 max-w-screen-xl mx-auto">
+        <div class="col-span-2 md:col-span-1">
+            <h3 class="font-serif text-xl text-white mb-6"><%= global.siteName %></h3>
+            <p class="text-stone-400 font-sans text-xs uppercase tracking-widest max-w-xs leading-relaxed"><%= global.footer.description %></p>
+        </div>
+        <div class="col-span-1 flex flex-col gap-4">
+            <span class="text-white font-label-caps text-[10px]">EXPLORE</span>
+            <a class="text-stone-400 hover:text-white transition-colors font-sans text-xs uppercase tracking-widest" href="index.html">Home</a>
+            <a class="text-stone-400 hover:text-white transition-colors font-sans text-xs uppercase tracking-widest" href="services.html">Our Services</a>
+            <a class="text-stone-400 hover:text-white transition-colors font-sans text-xs uppercase tracking-widest" href="gallery.html">Photo Gallery</a>
+            <a class="text-stone-400 hover:text-white transition-colors font-sans text-xs uppercase tracking-widest" href="about.html">About Us</a>
+            <a class="text-stone-400 hover:text-white transition-colors font-sans text-xs uppercase tracking-widest" href="contact.html">Contact Us</a>
+        </div>
+        <div class="col-span-1 flex flex-col gap-4 items-start ml-auto md:items-start md:ml-auto">
+            <span class="text-white font-label-caps text-[10px]">FOLLOW US</span>
+            <div class="space-y-4 flex flex-col items-start">
+                <a class="text-stone-400 hover:text-white transition-all flex items-center gap-3 font-sans text-xs uppercase tracking-widest group" href="<%= global.social.youtube %>">
+                    <svg class="w-5 h-5 fill-current opacity-60 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24"><path d="M21.8 8c-.1-1.9-1.2-3-3-3.2C17.2 4.7 12 4.7 12 4.7s-5.2 0-6.8.1c-1.8.2-2.9 1.3-3 3.2C2 9.6 2 12 2 12s0 2.4.1 4c.1 1.9 1.2 3 3 3.2 1.6.1 6.8.1 6.8.1s5.2 0 6.8-.1c1.8-.2 2.9-1.3 3-3.2.1-1.6.1-4 .1-4s0-2.4-.1-4zm-11.8 7V9l6 3-6 3z"/></svg>Youtube
+                </a>
+                <a class="text-stone-400 hover:text-white transition-all flex items-center gap-3 font-sans text-xs uppercase tracking-widest group" href="<%= global.social.instagram %>">
+                    <svg class="w-5 h-5 fill-current opacity-60 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.335 3.608 1.31.975.975 1.248 2.242 1.31 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.335 2.633-1.31 3.608-.975.975-2.242 1.248-3.608 1.31-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.335-3.608-1.31-.975-.975-1.248-2.242-1.31-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.335-2.633 1.31-3.608.975-.975 2.242-1.248 3.608-1.31 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-4.78 2.618-4.803 6.117-.002 1.28-.002 1.688-.002 4.947s0 3.667.002 4.947c.023 3.499.445 5.917 4.803 6.117 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c4.358-.2 4.78-2.618 4.803-6.117.002-1.28.002-1.688.002-4.947s0-3.667-.002-4.947c-.023-3.499-.445-5.917-4.803-6.117-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.44-.645 1.44-1.44s-.645-1.44-1.44-1.44z"/></svg>Instagram
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="mt-16 px-12 max-w-screen-xl mx-auto border-t border-stone-800 pt-8 flex justify-between items-center">
+        <span class="text-stone-500 font-sans text-[10px] uppercase tracking-widest"><%= global.footer.copyright %></span>
+    </div>
+</footer>

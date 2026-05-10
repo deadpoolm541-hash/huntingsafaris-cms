@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "title": "Contact Us | Ultimate Hunting Safaris – Get in Touch",
+    "description": "Contact Ultimate Hunting Safaris for inquiries about hunting expeditions in New Zealand, Africa, and Namibia. Reach us via WhatsApp, Instagram, or email."
+  },
+  "hero": {
+    "label": "Get in Touch",
+    "title": "Contact Ultimate Hunting Safaris",
+    "description": "For inquiries regarding expeditions and professional collaborations.",
+    "image": "contact_us_join_the_collective/contact_image1.webp",
+    "imageBlur": "contact_us_join_the_collective/contact_image1_blur.webp"
+  },
+  "channels": {
+    "instagram": {
+      "label": "Instagram",
+      "handle": "@huntingwithprochef",
+      "url": "https://www.instagram.com/hunting_with_prochef?igsh=MXhzMm50dGZybGMxcw=="
+    },
+    "whatsapp": {
+      "label": "WhatsApp",
+      "number": "+64 27 382 4866",
+      "url": "https://api.whatsapp.com/send/?phone=64273824866&text&type=phone_number&app_absent=0&lang=en"
+    },
+    "email": {
+      "label": "Email",
+      "address": "jacobjosemon@gmail.com"
+    }
+  },
+  "form": {
+    "title": "Send an Inquiry",
+    "description": "We welcome correspondence from fellow marksmen and enthusiasts of the wild.",
+    "formspreeId": "mqenprll",
+    "fieldNote": {
+      "quote": "The best conversations happen over a slow-burning fire after a long day in the brush. Until then, this digital portal will have to suffice.",
+      "attribution": "— THE EXPEDITION TEAM"
+    }
+  }
+}

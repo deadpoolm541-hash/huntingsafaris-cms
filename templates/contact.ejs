@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<%- include('partials/head') %>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<%- include('partials/header') %>
+<main class="w-full">
+    <!-- Hero Section -->
+    <section class="max-w-screen-2xl mx-auto mt-0">
+        <div class="relative h-[300px] md:h-[450px] w-full overflow-hidden flex items-start justify-start bg-stone-900">
+            <img class="absolute inset-0 w-full h-full object-cover blur-xl scale-110" src="<%= page.hero.imageBlur %>" aria-hidden="true"/>
+            <img class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000" src="<%= page.hero.image %>" alt="Contact Hero" onload="this.classList.remove('opacity-0')"/>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-transparent"></div>
+            <div class="relative z-10 px-8 sm:px-12 pt-16 sm:pt-24 text-left max-w-3xl">
+                <span class="font-label-caps text-secondary-container uppercase mb-3 block tracking-[0.3em] text-[10px] opacity-90"><%= page.hero.label %></span>
+                <h1 class="font-serif text-xl md:text-2xl lg:text-3xl text-white leading-relaxed"><%= page.hero.title %></h1>
+                <p class="font-body-lg text-white/70 mt-4 max-w-lg"><%= page.hero.description %></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Direct Channels Section -->
+    <section class="py-16 sm:py-24 px-4 sm:px-8 max-w-screen-xl mx-auto">
+        <div class="text-center mb-16">
+            <span class="font-label-caps text-secondary uppercase mb-4 block tracking-[0.3em]">Direct Channels</span>
+            <h2 class="font-display-lg text-3xl sm:text-4xl text-primary">Reach Out to Us</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Instagram -->
+            <a href="<%= page.channels.instagram.url %>" target="_blank" class="group bg-[#F5F5F5] border border-stone-200 p-8 text-center hover:bg-[#1B2B22] hover:text-white transition-all duration-300">
+                <svg class="w-8 h-8 mx-auto mb-4 fill-current text-stone-600 group-hover:text-white transition-colors" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.335 3.608 1.31.975.975 1.248 2.242 1.31 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.335 2.633-1.31 3.608-.975.975-2.242 1.248-3.608 1.31-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.335-3.608-1.31-.975-.975-1.248-2.242-1.31-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.335-2.633 1.31-3.608C4.518 2.567 5.785 2.294 7.15 2.233 8.416 2.175 8.796 2.163 12 2.163zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.272 2.695.072 7.053.014 8.333 0 8.741 0 12s.014 3.667.072 4.947c.2 4.358 2.623 6.781 6.981 6.981C8.333 23.986 8.741 24 12 24s3.667-.014 4.947-.072c4.358-.2 6.781-2.623 6.981-6.981C23.986 15.667 24 15.259 24 12s-.014-3.667-.072-4.947c-.2-4.358-2.623-6.781-6.981-6.981C15.667.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                <span class="font-label-caps text-[10px] uppercase tracking-widest block mb-2"><%= page.channels.instagram.label %></span>
+                <span class="font-serif text-lg"><%= page.channels.instagram.handle %></span>
+            </a>
+            <!-- WhatsApp -->
+            <a href="<%= page.channels.whatsapp.url %>" target="_blank" class="group bg-[#F5F5F5] border border-stone-200 p-8 text-center hover:bg-[#1B2B22] hover:text-white transition-all duration-300">
+                <svg class="w-8 h-8 mx-auto mb-4 fill-current text-stone-600 group-hover:text-white transition-colors" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                <span class="font-label-caps text-[10px] uppercase tracking-widest block mb-2"><%= page.channels.whatsapp.label %></span>
+                <span class="font-serif text-lg"><%= page.channels.whatsapp.number %></span>
+            </a>
+            <!-- Email -->
+            <a href="mailto:<%= page.channels.email.address %>" class="group bg-[#F5F5F5] border border-stone-200 p-8 text-center hover:bg-[#1B2B22] hover:text-white transition-all duration-300">
+                <span class="material-symbols-outlined text-3xl text-stone-600 group-hover:text-white transition-colors mb-4 block">mail</span>
+                <span class="font-label-caps text-[10px] uppercase tracking-widest block mb-2"><%= page.channels.email.label %></span>
+                <span class="font-serif text-lg"><%= page.channels.email.address %></span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Inquiry Form Section -->
+    <section id="inquiry-form" class="py-16 sm:py-24 px-4 sm:px-8 bg-[#1B2B22]">
+        <div class="max-w-screen-md mx-auto">
+            <div class="text-center mb-12">
+                <span class="font-label-caps text-primary-fixed uppercase mb-4 block tracking-[0.3em]"><%= page.form.title %></span>
+                <p class="text-stone-400 font-sans text-sm"><%= page.form.description %></p>
+            </div>
+            <form id="inquiry-form-el" action="https://formspree.io/f/<%= page.form.formspreeId %>" method="POST" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input type="text" name="name" placeholder="Full Name" required class="w-full bg-transparent border border-stone-600 text-white px-4 py-4 font-sans text-sm placeholder:text-stone-500 focus:border-primary-fixed outline-none"/>
+                    <input type="email" name="email" placeholder="Email Address" required class="w-full bg-transparent border border-stone-600 text-white px-4 py-4 font-sans text-sm placeholder:text-stone-500 focus:border-primary-fixed outline-none"/>
+                </div>
+                <select name="interest" class="w-full bg-transparent border border-stone-600 text-stone-400 px-4 py-4 font-sans text-sm focus:border-primary-fixed outline-none">
+                    <option value="" class="bg-[#1B2B22]">Select Your Interest</option>
+                    <option value="nz-beginners" class="bg-[#1B2B22]">New Zealand Beginners Package</option>
+                    <option value="african" class="bg-[#1B2B22]">African Hunting Experience</option>
+                    <option value="namibia" class="bg-[#1B2B22]">Namibia Hunting</option>
+                    <option value="dangerous" class="bg-[#1B2B22]">Dangerous Game</option>
+                    <option value="other" class="bg-[#1B2B22]">General Inquiry</option>
+                </select>
+                <textarea name="message" rows="5" placeholder="Your Message" required class="w-full bg-transparent border border-stone-600 text-white px-4 py-4 font-sans text-sm placeholder:text-stone-500 focus:border-primary-fixed outline-none resize-none"></textarea>
+                <button type="submit" class="w-full bg-white text-primary py-4 font-label-caps text-sm uppercase tracking-widest hover:bg-primary-fixed transition-colors">Send Inquiry</button>
+            </form>
+            <div class="mt-12 text-center border-t border-stone-700 pt-8">
+                <p class="font-serif italic text-stone-500 text-sm leading-relaxed max-w-md mx-auto">&ldquo;<%= page.form.fieldNote.quote %>&rdquo;</p>
+                <span class="font-label-caps text-stone-600 text-[10px] mt-4 block"><%= page.form.fieldNote.attribution %></span>
+            </div>
+        </div>
+    </section>
+</main>
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+<script>
+const form=document.getElementById('inquiry-form-el');
+if(form){form.addEventListener('submit',async function(e){e.preventDefault();const btn=form.querySelector('button[type=submit]');btn.textContent='Sending...';btn.disabled=true;try{const r=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});if(r.ok){form.innerHTML='<div class="text-center py-8"><span class="material-symbols-outlined text-4xl text-primary-fixed mb-4 block">check_circle</span><h3 class="font-serif text-xl text-white mb-2">Inquiry Sent</h3><p class="text-stone-400 text-sm">We will be in touch shortly.</p></div>';}else{btn.textContent='Error — Try Again';btn.disabled=false;}}catch(err){btn.textContent='Error — Try Again';btn.disabled=false;}});}
+</script>
+</body>
+</html>

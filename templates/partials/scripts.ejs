@@ -1,0 +1,29 @@
+<script>
+// Header scroll effect
+const header = document.querySelector('header');
+const headerContainer = document.getElementById('header-container');
+const logoText = document.getElementById('logo-text');
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    if (scrollY > 50) {
+        header.style.background = 'rgba(27,43,34,0.95)';
+        header.style.backdropFilter = 'blur(10px)';
+        if(headerContainer) { headerContainer.style.padding = '8px 32px'; }
+    } else {
+        header.style.background = 'transparent';
+        header.style.backdropFilter = 'none';
+        if(headerContainer) { headerContainer.style.padding = ''; }
+    }
+});
+
+// Mobile menu
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const closeMenuBtn = document.getElementById('close-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileOverlay = document.getElementById('mobile-overlay');
+function openMenu() { mobileMenu.classList.add('active'); mobileOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeMenu() { mobileMenu.classList.remove('active'); mobileOverlay.classList.remove('active'); document.body.style.overflow = ''; }
+if(hamburgerBtn) hamburgerBtn.addEventListener('click', openMenu);
+if(closeMenuBtn) closeMenuBtn.addEventListener('click', closeMenu);
+if(mobileOverlay) mobileOverlay.addEventListener('click', closeMenu);
+</script>

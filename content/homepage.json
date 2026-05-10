@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "Ultimate Hunting Safaris | Professional Hunting Expeditions in New Zealand, Africa & Namibia",
+    "description": "Ultimate Hunting Safaris offers professional hunting expeditions across New Zealand, Africa, and Namibia. Expert guides, beginner-friendly packages, and dangerous game hunting. Join the hunt today."
+  },
+  "hero": {
+    "tagline": "The Bond of the Wild.",
+    "title": "Ultimate Hunting Safaris",
+    "ctaText": "EXPLORE OUR SERVICES",
+    "ctaLink": "services.html",
+    "desktopImage": "homepage/main_section/image_desktop.webp",
+    "desktopBlur": "homepage/main_section/image_desktop_blur.webp",
+    "mobileImage": "homepage/main_section/image_mobile.webp",
+    "mobileBlur": "homepage/main_section/image_mobile_blur.webp"
+  },
+  "story": {
+    "label": "Our Story",
+    "title": "Ultimate Hunting Safaris",
+    "paragraphs": [
+      "What began as a private conversation between seasoned field guides over a shared campfire has grown into 'Ultimate Hunting Safaris'—a community-driven team dedicated to the art of the hunt and the preservation of the sporting life. We believe that the expedition is more than just the pursuit; it is a story of coordination, respect, and deep connection to the wild.",
+      "Today, Ultimate Hunting Safaris serves as a sanctuary for those who seek more than a trophy. We are a brotherhood and sisterhood of the woods, committed to conservation, ethics, and the timeless ritual of the shared experience in the heart of the brush."
+    ],
+    "ctaText": "Join the Expedition",
+    "images": [
+      "homepage/section2/image2.jpeg",
+      "homepage/section2/image4.png"
+    ]
+  },
+  "expertise": {
+    "label": "Expert Guidance",
+    "title": "Mastery of the Terrain",
+    "description": "A successful harvest demands an intimate understanding of the wild. We guide every safari with seasoned expertise and profound respect for the land.",
+    "ctaText": "Check Out Our Services",
+    "image": "homepage/section3/image3.webp"
+  },
+  "team": [
+    {
+      "name": "Raju Paul",
+      "image": "homepage/section4/team_image3.jpeg"
+    },
+    {
+      "name": "Jacob Josemon",
+      "image": "homepage/section4/team_image2.jpeg"
+    },
+    {
+      "name": "Lino Abraham",
+      "image": "homepage/section4/team_image1.jpeg"
+    }
+  ],
+  "cta": {
+    "title": "Ready to answer the call?",
+    "description": "Join our next expedition and find your place among the hunters.",
+    "buttonText": "CONNECT WITH US"
+  }
+}

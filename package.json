@@ -1,0 +1,15 @@
+{
+  "name": "ultimate-hunting-safaris-cms",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "cheerio": "^1.0.0",
+    "ejs": "^3.1.10",
+    "sharp": "^0.33.2"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "siteName": "Ultimate Hunting Safaris",
+  "logo": "logo.webp",
+  "logoPng": "logo1.png",
+  "canonicalBase": "https://www.ultimatehuntingsafaris.com",
+  "social": {
+    "youtube": "https://m.youtube.com/channel/UCv1yfKKzeUBjD6Ekyvu03lQ?fbclid=PAb21jcARcWzVleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAaeH4upR35e-6wpmG62y4tmN1FcdzlwMvpixp4xwTmVDVVqI0_LlfkJMLsJX7Q_aem_qgaYyfOEI1xGodgT4C6tUg",
+    "instagram": "https://www.instagram.com/hunting_with_prochef?igsh=MXhzMm50dGZybGMxcw=="
+  },
+  "footer": {
+    "description": "Professional hunting expeditions built on expertise, ethics, and a deep respect for the wild.",
+    "copyright": "© 2026 Ultimate Hunting Safaris. All Rights Reserved."
+  },
+  "contact": {
+    "phone": "+64273824866",
+    "email": "jacobjosemon@gmail.com",
+    "instagramHandle": "hunting_with_prochef"
+  }
+}

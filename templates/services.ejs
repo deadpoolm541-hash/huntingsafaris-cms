@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<%- include('partials/head') %>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<%- include('partials/header') %>
+<main class="w-full">
+    <!-- Hero -->
+    <section class="max-w-screen-2xl mx-auto mt-0">
+        <div class="relative h-[300px] md:h-[450px] w-full overflow-hidden flex items-start justify-start bg-stone-900">
+            <img class="absolute inset-0 w-full h-full object-cover blur-xl scale-110" src="<%= page.hero.imageBlur %>" aria-hidden="true"/>
+            <img class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000" src="<%= page.hero.image %>" alt="Services Hero" onload="this.classList.remove('opacity-0')"/>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-transparent"></div>
+            <div class="relative z-10 px-8 sm:px-12 pt-16 sm:pt-24 text-left max-w-3xl">
+                <span class="font-label-caps text-secondary-container uppercase mb-3 block tracking-[0.3em] text-[10px] opacity-90"><%= page.hero.label %></span>
+                <h1 class="font-serif text-xl md:text-2xl lg:text-3xl text-white leading-relaxed"><%= page.hero.title %></h1>
+                <p class="font-body-lg text-white/70 mt-4 max-w-lg"><%= page.hero.description %></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Header -->
+    <section class="py-16 sm:py-20 bg-surface text-center">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <span class="font-label-caps text-secondary uppercase mb-4 block tracking-[0.3em]"><%= page.sectionLabel %></span>
+            <h2 class="font-display-lg text-3xl sm:text-5xl text-primary"><%= page.sectionTitle %></h2>
+            <div class="mt-8 w-24 h-1 bg-secondary mx-auto opacity-30"></div>
+        </div>
+    </section>
+
+    <!-- Packages -->
+    <% page.packages.forEach(function(pkg) { %>
+    <section id="<%= pkg.id %>" class="<%= pkg.theme === 'dark' ? 'bg-[#1B2B22] text-white' : 'bg-surface' %> py-16 sm:py-24 px-4 sm:px-8">
+        <div class="max-w-screen-xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="font-label-caps <%= pkg.theme === 'dark' ? 'text-primary-fixed' : 'text-secondary' %> uppercase mb-4 block tracking-[0.3em]"><%= pkg.label %></span>
+                <h3 class="font-display-lg text-3xl sm:text-5xl <%= pkg.theme === 'dark' ? 'text-white' : 'text-primary' %>"><%= pkg.title %></h3>
+                <% if (pkg.description) { %>
+                <p class="font-body-lg <%= pkg.theme === 'dark' ? 'text-stone-400' : 'text-on-surface-variant' %> mt-6 max-w-2xl mx-auto"><%= pkg.description %></p>
+                <% } %>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-start">
+                <!-- Inclusions -->
+                <div>
+                    <h4 class="font-label-caps text-[10px] uppercase tracking-widest <%= pkg.theme === 'dark' ? 'text-stone-400' : 'text-stone-500' %> mb-6">What's Included</h4>
+                    <div class="space-y-3">
+                        <% (pkg.inclusions || []).forEach(function(item) { %>
+                        <div class="flex items-start gap-3 <%= pkg.theme === 'dark' ? 'text-stone-300' : 'text-on-surface-variant' %>">
+                            <span class="material-symbols-outlined text-sm mt-1 <%= pkg.theme === 'dark' ? 'text-primary-fixed' : 'text-secondary' %>" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span class="font-sans text-sm"><%= item %></span>
+                        </div>
+                        <% }); %>
+                    </div>
+
+                    <% if (pkg.highlightedInclusion) { %>
+                    <div class="mt-6 p-4 border <%= pkg.theme === 'dark' ? 'border-stone-600 bg-white/5' : 'border-stone-300 bg-stone-50' %>">
+                        <span class="font-sans text-sm font-semibold"><%= pkg.highlightedInclusion %></span>
+                        <% if (pkg.inclusionNote) { %><p class="font-sans text-xs mt-1 <%= pkg.theme === 'dark' ? 'text-stone-400' : 'text-stone-500' %>"><%= pkg.inclusionNote %></p><% } %>
+                    </div>
+                    <% } %>
+
+                    <% if (pkg.beginnerFeatures) { %>
+                    <h4 class="font-label-caps text-[10px] uppercase tracking-widest <%= pkg.theme === 'dark' ? 'text-stone-400' : 'text-stone-500' %> mb-6 mt-10">Beginner Training</h4>
+                    <div class="space-y-3">
+                        <% pkg.beginnerFeatures.forEach(function(f) { %>
+                        <div class="flex items-start gap-3 <%= pkg.theme === 'dark' ? 'text-stone-300' : 'text-on-surface-variant' %>">
+                            <span class="material-symbols-outlined text-sm mt-1 text-amber-600" style="font-variation-settings: 'FILL' 1;">school</span>
+                            <span class="font-sans text-sm"><%= f %></span>
+                        </div>
+                        <% }); %>
+                    </div>
+                    <% } %>
+
+                    <% if (pkg.beginnerNote) { %>
+                    <div class="mt-10 p-6 border <%= pkg.theme === 'dark' ? 'border-stone-600 bg-white/5' : 'border-stone-300 bg-stone-50' %>">
+                        <h5 class="font-label-caps text-[10px] uppercase tracking-widest mb-3 <%= pkg.theme === 'dark' ? 'text-primary-fixed' : 'text-secondary' %>"><%= pkg.beginnerNote.heading %></h5>
+                        <p class="font-sans text-xs mb-3 <%= pkg.theme === 'dark' ? 'text-stone-400' : 'text-stone-500' %>"><%= pkg.beginnerNote.subtitle %></p>
+                        <% pkg.beginnerNote.points.forEach(function(p) { %>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-1 h-1 rounded-full <%= pkg.theme === 'dark' ? 'bg-primary-fixed' : 'bg-secondary' %>"></span>
+                            <span class="font-sans text-sm <%= pkg.theme === 'dark' ? 'text-stone-300' : 'text-on-surface-variant' %>"><%= p %></span>
+                        </div>
+                        <% }); %>
+                    </div>
+                    <% } %>
+
+                    <!-- Game Species -->
+                    <% if (pkg.gameSpecies || pkg.huntingIncluded) { %>
+                    <h4 class="font-label-caps text-[10px] uppercase tracking-widest <%= pkg.theme === 'dark' ? 'text-stone-400' : 'text-stone-500' %> mb-6 mt-10">Game Species</h4>
+                    <div class="flex flex-wrap gap-3">
+                        <% (pkg.gameSpecies || pkg.huntingIncluded || []).forEach(function(g) { %>
+                        <span class="px-4 py-2 text-xs font-label-caps uppercase tracking-widest border <%= pkg.theme === 'dark' ? 'border-stone-600 text-stone-300' : 'border-stone-300 text-stone-600' %>"><%= g %></span>
+                        <% }); %>
+                    </div>
+                    <% if (pkg.gameNote) { %><p class="mt-3 font-sans text-xs italic <%= pkg.theme === 'dark' ? 'text-stone-500' : 'text-stone-400' %>"><%= pkg.gameNote %></p><% } %>
+                    <% } %>
+
+                    <% if (pkg.whyChoose) { %>
+                    <div class="mt-10">
+                        <h4 class="font-label-caps text-[10px] uppercase tracking-widest <%= pkg.theme === 'dark' ? 'text-stone-400' : 'text-stone-500' %> mb-6"><%= pkg.whyChoose.heading %></h4>
+                        <div class="space-y-3">
+                            <% pkg.whyChoose.points.forEach(function(p) { %>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-sm <%= pkg.theme === 'dark' ? 'text-primary-fixed' : 'text-secondary' %>" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-sans text-sm <%= pkg.theme === 'dark' ? 'text-stone-300' : 'text-on-surface-variant' %>"><%= p %></span>
+                            </div>
+                            <% }); %>
+                        </div>
+                        <% if (pkg.whyChoose.note) { %><p class="mt-4 font-sans text-xs italic <%= pkg.theme === 'dark' ? 'text-stone-500' : 'text-stone-400' %>"><%= pkg.whyChoose.note %></p><% } %>
+                    </div>
+                    <% } %>
+                </div>
+
+                <!-- Offer Card -->
+                <% if (pkg.offerCard) { %>
+                <div class="w-full lg:w-72 flex-shrink-0 sticky top-24">
+                    <div class="<%= pkg.theme === 'dark' ? 'bg-white text-[#1B2B22]' : 'bg-[#1B2B22] text-white' %> p-8 text-center">
+                        <span class="font-label-caps text-[10px] uppercase tracking-widest opacity-60 block mb-4"><%= pkg.offerCard.heading %></span>
+                        <h4 class="font-serif text-2xl font-bold mb-2"><%= pkg.offerCard.duration %></h4>
+                        <div class="w-12 h-px mx-auto my-4 <%= pkg.theme === 'dark' ? 'bg-stone-300' : 'bg-white/30' %>"></div>
+                        <span class="font-label-caps text-[10px] uppercase tracking-widest"><%= pkg.offerCard.bonus %></span>
+                        <div class="mt-8">
+                            <a href="contact.html#inquiry-form" class="block w-full py-3 font-label-caps text-[10px] uppercase tracking-widest border <%= pkg.theme === 'dark' ? 'border-[#1B2B22] hover:bg-[#1B2B22] hover:text-white' : 'border-white hover:bg-white hover:text-[#1B2B22]' %> transition-colors">Inquire Now</a>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+    <% }); %>
+</main>
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+</body>
+</html>

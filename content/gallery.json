@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "Photo Gallery | Ultimate Hunting Safaris – Field Chronicles",
+    "description": "Browse the Ultimate Hunting Safaris photo gallery. Stunning field photography from hunting expeditions across New Zealand, Africa, and Namibia."
+  },
+  "hero": {
+    "label": "Field Chronicles",
+    "quote": "The hunt is only half the story; the brotherhood formed in the silence of the bush is what remains.",
+    "heroImage": "photo_gallery/gallery_image_main.webp",
+    "heroBlur": "photo_gallery/gallery_image_main_blur.webp"
+  },
+  "heading": "Moments, Memories, Legacy.",
+  "images": [
+    {
+      "src": "photo_gallery/gallery_image9.jpeg",
+      "colSpan": 8,
+      "height": 600,
+      "objectPosition": "center 35%"
+    },
+    {
+      "src": "photo_gallery/gallery_image2.png",
+      "colSpan": 4,
+      "height": 600,
+      "objectPosition": "25% center"
+    },
+    {
+      "src": "photo_gallery/gallery_image3.jpeg",
+      "colSpan": 3,
+      "height": 350,
+      "effect": "grayscale"
+    },
+    {
+      "src": "photo_gallery/gallery_image4.jpeg",
+      "colSpan": 3,
+      "height": 350,
+      "effect": "none"
+    },
+    {
+      "src": "photo_gallery/gallery_image5.jpeg",
+      "colSpan": 3,
+      "height": 350,
+      "objectPosition": "top",
+      "effect": "none"
+    },
+    {
+      "src": "photo_gallery/gallery_image8.jpeg",
+      "colSpan": 3,
+      "height": 350,
+      "effect": "none"
+    },
+    {
+      "src": "photo_gallery/gallery_image6.jpeg",
+      "colSpan": 6,
+      "height": 450,
+      "effect": "none"
+    },
+    {
+      "src": "photo_gallery/gallery_image7.jpeg",
+      "colSpan": 6,
+      "height": 450,
+      "effect": "none"
+    },
+    {
+      "src": "photo_gallery/gallery_image10.jpeg",
+      "colSpan": 4,
+      "height": 400,
+      "effect": "none"
+    },
+    {
+      "src": "photo_gallery/gallery_image11.jpeg",
+      "colSpan": 4,
+      "height": 400,
+      "effect": "none"
+    },
+    {
+      "src": "photo_gallery/image_desktop.webp",
+      "colSpan": 4,
+      "height": 400,
+      "effect": "none"
+    },
+    {
+      "src": "photo_gallery/image_desktop.webp",
+      "colSpan": 4,
+      "height": 400,
+      "effect": "none"
+    }
+  ]
+}

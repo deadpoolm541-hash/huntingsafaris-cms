@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<%- include('partials/head') %>
+<style>
+    #lightbox{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);opacity:0;transition:opacity .3s ease}
+    #lightbox.open{display:flex;opacity:1}
+    #lightbox-img{max-width:90vw;max-height:85vh;object-fit:contain;transform:scale(.95);transition:transform .4s cubic-bezier(.16,1,.3,1)}
+    #lightbox.open #lightbox-img{transform:scale(1)}
+</style>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<%- include('partials/header') %>
+<main class="w-full">
+    <!-- Hero Section with Quote -->
+    <section class="max-w-screen-2xl mx-auto mt-0">
+        <div class="relative h-[300px] md:h-[450px] w-full overflow-hidden flex items-start justify-start bg-stone-900">
+            <img class="absolute inset-0 w-full h-full object-cover object-left blur-xl scale-110" src="<%= page.hero.heroBlur %>" aria-hidden="true"/>
+            <img class="absolute inset-0 w-full h-full object-cover object-left opacity-0 transition-opacity duration-1000" src="<%= page.hero.heroImage %>" alt="Hero Gallery Image" onload="this.classList.remove('opacity-0')"/>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-transparent"></div>
+            <div class="relative z-10 px-8 sm:px-12 pt-16 sm:pt-24 text-left max-w-3xl">
+                <span class="font-label-caps text-secondary-container uppercase mb-3 block tracking-[0.3em] text-[10px] opacity-90"><%= page.hero.label %></span>
+                <h1 class="font-serif italic text-xl md:text-2xl lg:text-3xl text-white leading-relaxed min-h-[4em]">
+                    &ldquo;<span id="typewriter"></span>
+                </h1>
+                <script>
+                    const quoteText = "<%= page.hero.quote %>";
+                    let charIndex = 0;
+                    const target = document.getElementById("typewriter");
+                    function typeEffect() {
+                        if (charIndex < quoteText.length) {
+                            target.textContent += quoteText.charAt(charIndex);
+                            charIndex++;
+                            setTimeout(typeEffect, 25);
+                        } else {
+                            target.textContent += "\u201D";
+                        }
+                    }
+                    document.addEventListener('DOMContentLoaded', typeEffect);
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Heading -->
+    <section class="py-20 bg-surface">
+        <div class="max-w-screen-2xl mx-auto px-8 text-center">
+            <h2 class="font-display-lg text-2xl sm:text-4xl md:text-6xl text-primary tracking-tight"><%= page.heading %></h2>
+            <div class="mt-8 w-24 h-1 bg-secondary mx-auto opacity-30"></div>
+        </div>
+    </section>
+
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-8 pb-20">
+        <section class="bento-grid grid grid-cols-1 md:grid-cols-12 gap-y-6 gap-x-2 mb-12">
+            <% page.images.forEach(function(img) { %>
+            <div class="col-span-1 md:col-span-<%= img.colSpan %> h-auto md:h-[<%= img.height %>px] overflow-hidden group<% if(img.effect === 'grayscale') { %> relative<% } %>">
+                <img class="w-full h-auto md:h-full md:object-cover<% if(img.objectPosition) { %> object-[<%= img.objectPosition %>]<% } else { %> object-center<% } %> transition-all duration-700 group-hover:scale-105<% if(img.effect === 'grayscale') { %> grayscale group-hover:grayscale-0<% } %>" src="<%= img.src %>" alt="Gallery image" loading="lazy" onclick="openLightbox(this.src)"/>
+            </div>
+            <% }); %>
+        </section>
+    </div>
+</main>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+    <button class="absolute top-6 right-6 text-white/60 hover:text-white text-4xl z-10">&times;</button>
+    <img id="lightbox-img" src="" alt="Lightbox"/>
+</div>
+
+<%- include('partials/footer') %>
+
+<script>
+function openLightbox(src) { const lb=document.getElementById('lightbox'); document.getElementById('lightbox-img').src=src; lb.style.display='flex'; requestAnimationFrame(()=>lb.classList.add('open')); document.body.style.overflow='hidden'; }
+function closeLightbox() { const lb=document.getElementById('lightbox'); lb.classList.remove('open'); setTimeout(()=>{lb.style.display='none'},300); document.body.style.overflow=''; }
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox()});
+</script>
+<%- include('partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "title": "Hunting Packages & Services | Ultimate Hunting Safaris – New Zealand, Africa & Namibia",
+    "description": "Explore hunting packages from Ultimate Hunting Safaris. Beginner-friendly New Zealand trips, African experiences, Namibia hunts, and dangerous game expeditions."
+  },
+  "hero": {
+    "label": "Guided Experiences",
+    "title": "Hunting Packages",
+    "description": "Immerse yourself in the primal elegance of the wild. Tailored expeditions for every skill level, guided by experts who respect the land and the craft.",
+    "image": "hunting_packages_our_services/services_image1.webp",
+    "imageBlur": "hunting_packages_our_services/services_image1_blur.webp"
+  },
+  "sectionLabel": "The Selection",
+  "sectionTitle": "Curated Expeditions",
+  "packages": [
+    {
+      "id": "package-nz",
+      "theme": "light",
+      "label": "4-5 Days Guided Experience",
+      "title": "New Zealand Beginners Hunting Package",
+      "subtitle": "New to hunting?",
+      "description": "No problem. At Ultimate Hunting Safaris Limited, we specialise in providing a safe, professional, and unforgettable New Zealand hunting experience for beginners.",
+      "inclusions": [
+        "4-5 Days Fully Guided Hunt",
+        "Comfortable Food & Accommodation (Lodging Included)",
+        "Hunting Vehicles",
+        "Rifle Hire & Ammunition",
+        "2 Animals Per Person (additional animals at extra cost)",
+        "Soft Drinks & Beer",
+        "Pick-Up & Drop-Off from Local Airport"
+      ],
+      "beginnerFeatures": [
+        "Full Safety Briefing",
+        "Rifle Handling & Firearm Safety Training",
+        "Basic Shooting Instruction (Range Practice)",
+        "Step-by-Step Guided Hunting Experience",
+        "Ethical Hunting & Field Preparation Guidance"
+      ],
+      "gameSpecies": ["RED DEER", "FALLOW DEER", "WILD GOAT"],
+      "gameNote": "(Species availability may vary by season)",
+      "offerCard": {
+        "heading": "WHAT WE OFFER!",
+        "duration": "4-5 DAYS PACKAGE",
+        "bonus": "GUIDED EXPERIENCE"
+      },
+      "whyChoose": {
+        "heading": "Why Choose Our Beginner Package?",
+        "points": [
+          "Professional & Supportive Environment",
+          "Safe & Structured Training",
+          "All Equipment Provided",
+          "No Experience Required",
+          "Complete Start-to-Finish Guidance"
+        ],
+        "note": "Family trips available on special request. Non-hunters are welcome to join and enjoy the experience."
+      }
+    },
+    {
+      "id": "package-africa",
+      "theme": "dark",
+      "label": "African Exclusive",
+      "title": "Ultimate African Hunting Experience",
+      "description": "Step into Africa's wild beauty with fully guided, beginner-friendly hunting package. Designed for a safe, exciting and unforgettable experience-featuring your original photos in the final brochure.",
+      "inclusions": [
+        "Airport pick up and drop off",
+        "Accomodation & All meals",
+        "Daily Laundry service",
+        "Professional Licensed Guides",
+        "Hunting Vehicle",
+        "Licensed Guides",
+        "Skinners & Trackers",
+        "Baboon shooting",
+        "Rifle handling training",
+        "Shooting practice Sessions",
+        "Soft Drinks & Beer included"
+      ],
+      "beginnerNote": {
+        "heading": "Perfect For Beginners",
+        "subtitle": "Ideal for new hunters wanting:",
+        "points": [
+          "Safe and Structured training",
+          "Real African field experience",
+          "A mix of adventure, hunting, and wildlife encounters"
+        ]
+      },
+      "huntingIncluded": ["Impala", "Small Game Hunting", "Bird Shooting Experience"],
+      "additionalBigGame": ["Giraffe", "Zebra", "Wildebeest"],
+      "offerCard": {
+        "heading": "WHAT WE OFFER!",
+        "duration": "8-DAYS PACKAGE",
+        "bonus": "+ FREE VISA SUPPORT!"
+      }
+    },
+    {
+      "id": "package-namibia",
+      "theme": "light",
+      "label": "Namibia Exclusive",
+      "title": "Hunting in Namibia",
+      "inclusions": [
+        "5x Full days.",
+        "1x Arrival day.",
+        "Airport transfers from airport to farm and back to airport.",
+        "Accomodation & All meals.",
+        "Daily Laundry Service.",
+        "Professional Licensed Guides.",
+        "Hunting Vehicle.",
+        "Skinners & Trackers.",
+        "Baboon Shooting.",
+        "Rifle Handling Training.",
+        "Shooting Practice Sessions.",
+        "Non-Alcoholic Beverages & Beer.",
+        "Rifle rental and ammunition Hunting on a 2x1 basis."
+      ],
+      "highlightedInclusion": "1x Management Oryx or Springbuck or Warthog.",
+      "inclusionNote": "All other trophy and management animals will be charged dynamically.",
+      "huntingIncluded": ["Oryx.", "Springbuck.", "Warthog.", "Baboon.", "Bird Shooting."],
+      "offerCard": {
+        "heading": "WHAT WE OFFER!",
+        "duration": "7-DAYS PACKAGE",
+        "bonus": "+ FREE VISA SERVICE!"
+      }
+    }
+  ]
+}

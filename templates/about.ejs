@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<%- include('partials/head') %>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<%- include('partials/header') %>
+<main class="w-full">
+    <!-- Hero Section -->
+    <section class="max-w-screen-2xl mx-auto mt-0">
+        <div class="relative h-[300px] md:h-[450px] w-full overflow-hidden flex items-start justify-start bg-stone-900">
+            <img class="absolute inset-0 w-full h-full object-cover blur-xl scale-110" src="about_us_detailed_narrative/about_image1_blur.webp" aria-hidden="true"/>
+            <img class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000" src="about_us_detailed_narrative/about_image1.webp" alt="About Hero" onload="this.classList.remove('opacity-0')"/>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-transparent"></div>
+            <div class="relative z-10 px-8 sm:px-12 pt-16 sm:pt-24 text-left max-w-3xl">
+                <span class="font-label-caps text-secondary-container uppercase mb-3 block tracking-[0.3em] text-[10px] opacity-90"><%= page.story.label %></span>
+                <h1 class="font-serif italic text-xl md:text-2xl lg:text-3xl text-white leading-relaxed"><%= page.story.title %></h1>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Story Section -->
+    <section class="py-16 sm:py-24 px-4 sm:px-8 max-w-screen-lg mx-auto">
+        <div class="space-y-8">
+            <% page.story.paragraphs.forEach(function(p) { %>
+            <p class="font-body-lg text-on-surface-variant leading-relaxed text-base sm:text-lg"><%= p %></p>
+            <% }); %>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-16 sm:py-24 px-4 sm:px-8 bg-[#F5F5F5]">
+        <div class="max-w-screen-xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="font-label-caps text-secondary uppercase mb-4 block tracking-[0.3em]">Meet the Team</span>
+                <h2 class="font-display-lg text-4xl sm:text-5xl text-primary">Our Experts</h2>
+            </div>
+            <div class="space-y-20">
+                <% page.team.forEach(function(member, i) { %>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center <%= i % 2 === 1 ? 'lg:direction-rtl' : '' %>">
+                    <div class="<%= i % 2 === 1 ? 'lg:order-2' : '' %>">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img alt="<%= member.name %>" class="w-full h-full object-cover" src="<%= member.image %>"/>
+                        </div>
+                    </div>
+                    <div class="<%= i % 2 === 1 ? 'lg:order-1' : '' %>">
+                        <span class="font-label-caps text-secondary uppercase mb-2 block tracking-[0.3em] text-[10px]"><%= member.role %></span>
+                        <h3 class="font-display-lg text-3xl sm:text-4xl text-primary mb-6"><%= member.name %></h3>
+                        <p class="font-body-lg text-on-surface-variant leading-relaxed"><%= member.bio %></p>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+</main>
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+</body>
+</html>
