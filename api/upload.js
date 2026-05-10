@@ -23,83 +23,58 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // Parse multipart form data manually for Vercel serverless
+    // Read raw body into memory
     const chunks = [];
-    for await (const chunk of req) {
-      chunks.push(chunk);
-    }
+    for await (const chunk of req) chunks.push(chunk);
     const buffer = Buffer.concat(chunks);
 
-    // Extract boundary from content-type
     const contentType = req.headers['content-type'] || '';
     const boundaryMatch = contentType.match(/boundary=(.+)/);
+    if (!boundaryMatch) return res.status(400).json({ error: 'Missing multipart boundary' });
 
-    if (!boundaryMatch) {
-      return res.status(400).json({ error: 'Missing multipart boundary' });
-    }
-
-    const boundary = boundaryMatch[1];
-    const parts = parseMultipart(buffer, boundary);
-
-    if (!parts.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
+    const parts = parseMultipart(buffer, boundaryMatch[1]);
+    if (!parts.file) return res.status(400).json({ error: 'No file uploaded' });
 
     const { filename, data } = parts.file;
-    const targetDir = parts.directory || 'photo_gallery';
-
-    // Validate directory - prevent path traversal
-    if (!/^[a-zA-Z0-9_/-]+$/.test(targetDir)) {
-      return res.status(400).json({ error: 'Invalid directory path' });
-    }
-
-    // Convert to WebP using sharp
-    let sharp;
-    try {
-      sharp = require('sharp');
-    } catch (e) {
-      // If sharp isn't available, save as-is
-      const outputDir = path.join(process.cwd(), 'static', targetDir);
-      if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-
-      const outputPath = path.join(outputDir, filename);
-      fs.writeFileSync(outputPath, data);
-
-      return res.status(200).json({
-        success: true,
-        path: `${targetDir}/${filename}`,
-        format: path.extname(filename).slice(1)
-      });
-    }
-
-    const baseName = path.basename(filename, path.extname(filename));
+    const targetDir = (parts.directory || 'photo_gallery').replace(/[^a-zA-Z0-9_\-/]/g, '');
+    const baseName = path.basename(filename, path.extname(filename)).replace(/[^a-zA-Z0-9_\-. ]/g, '_');
     const webpFilename = `${baseName}.webp`;
     const blurFilename = `${baseName}_blur.webp`;
 
-    const outputDir = path.join(process.cwd(), 'static', targetDir);
-    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-
-    // Convert to high-quality WebP
-    await sharp(data)
-      .webp({ quality: 82 })
-      .toFile(path.join(outputDir, webpFilename));
-
-    // Generate blur placeholder
-    await sharp(data)
-      .resize(40) // Tiny size for blur placeholder
-      .webp({ quality: 20 })
-      .toFile(path.join(outputDir, blurFilename));
-
-    // If GitHub integration is configured, commit the images
+    const isVercel = !!process.env.VERCEL;
     const githubToken = process.env.GITHUB_TOKEN;
     const githubRepo = process.env.GITHUB_REPO;
 
-    if (githubToken && githubRepo) {
-      const webpData = fs.readFileSync(path.join(outputDir, webpFilename));
-      const blurData = fs.readFileSync(path.join(outputDir, blurFilename));
+    // Convert to WebP entirely in memory — no disk writes
+    let webpBuffer, blurBuffer;
+    try {
+      const sharp = require('sharp');
+      webpBuffer = await sharp(data).webp({ quality: 82 }).toBuffer();
+      blurBuffer = await sharp(data).resize(40).webp({ quality: 20 }).toBuffer();
+    } catch (e) {
+      // sharp unavailable — use original data
+      webpBuffer = data;
+      blurBuffer = data;
+    }
 
-      await commitFileToGitHub(githubToken, githubRepo, `static/${targetDir}/${webpFilename}`, webpData);
-      await commitFileToGitHub(githubToken, githubRepo, `static/${targetDir}/${blurFilename}`, blurData);
+    if (isVercel) {
+      // Vercel: filesystem is read-only — commit directly to GitHub
+      if (!githubToken || !githubRepo) {
+        return res.status(500).json({ error: 'GITHUB_TOKEN and GITHUB_REPO must be set on Vercel' });
+      }
+      await commitFileToGitHub(githubToken, githubRepo, `static/${targetDir}/${webpFilename}`, webpBuffer);
+      await commitFileToGitHub(githubToken, githubRepo, `static/${targetDir}/${blurFilename}`, blurBuffer);
+    } else {
+      // Local dev: write to static/ folder
+      const outputDir = path.join(process.cwd(), 'static', targetDir);
+      if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+      fs.writeFileSync(path.join(outputDir, webpFilename), webpBuffer);
+      fs.writeFileSync(path.join(outputDir, blurFilename), blurBuffer);
+
+      if (githubToken && githubRepo) {
+        commitFileToGitHub(githubToken, githubRepo, `static/${targetDir}/${webpFilename}`, webpBuffer).catch(console.error);
+        commitFileToGitHub(githubToken, githubRepo, `static/${targetDir}/${blurFilename}`, blurBuffer).catch(console.error);
+      }
     }
 
     return res.status(200).json({
@@ -118,7 +93,6 @@ module.exports = async (req, res) => {
 function parseMultipart(buffer, boundary) {
   const result = {};
   const boundaryBuf = Buffer.from(`--${boundary}`);
-  const parts = [];
   let start = buffer.indexOf(boundaryBuf) + boundaryBuf.length;
 
   while (true) {
@@ -130,7 +104,7 @@ function parseMultipart(buffer, boundary) {
     if (headerEnd === -1) { start = nextBoundary + boundaryBuf.length; continue; }
 
     const headers = part.slice(0, headerEnd).toString('utf-8');
-    const body = part.slice(headerEnd + 4, part.length - 2); // Remove trailing \r\n
+    const body = part.slice(headerEnd + 4, part.length - 2);
 
     const nameMatch = headers.match(/name="([^"]+)"/);
     const filenameMatch = headers.match(/filename="([^"]+)"/);
@@ -160,25 +134,20 @@ async function commitFileToGitHub(token, repo, filePath, data) {
   let sha = null;
   try {
     const getRes = await fetch(apiBase, { headers });
-    if (getRes.ok) {
-      const d = await getRes.json();
-      sha = d.sha;
-    }
+    if (getRes.ok) sha = (await getRes.json()).sha;
   } catch (e) { /* file doesn't exist yet */ }
-
-  const body = {
-    message: `CMS: Upload ${path.basename(filePath)}`,
-    content: data.toString('base64'),
-    ...(sha ? { sha } : {})
-  };
 
   const putRes = await fetch(apiBase, {
     method: 'PUT',
     headers,
-    body: JSON.stringify(body)
+    body: JSON.stringify({
+      message: `CMS: Upload ${path.basename(filePath)}`,
+      content: Buffer.from(data).toString('base64'),
+      ...(sha ? { sha } : {})
+    })
   });
 
   if (!putRes.ok) {
-    throw new Error(`GitHub upload failed: ${putRes.status}`);
+    throw new Error(`GitHub upload failed: ${putRes.status} ${await putRes.text()}`);
   }
 }
