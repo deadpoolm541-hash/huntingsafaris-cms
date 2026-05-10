@@ -71,18 +71,6 @@
       "colSpan": 4,
       "height": 400,
       "effect": "none"
-    },
-    {
-      "src": "photo_gallery/image_desktop.webp",
-      "colSpan": 4,
-      "height": 400,
-      "effect": "none"
-    },
-    {
-      "src": "photo_gallery/image_desktop.webp",
-      "colSpan": 4,
-      "height": 400,
-      "effect": "none"
     }
   ]
 }
