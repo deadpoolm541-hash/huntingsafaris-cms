@@ -122,22 +122,28 @@ function buildAbout() {
   let html = fs.readFileSync(path.join(TEMPLATES, 'about.html'), 'utf-8');
   const $ = cheerio.load(html, { decodeEntities: false });
 
-  // Story paragraphs - find the main text container
-  const storyParagraphs = $('main p.font-body-lg, main p.text-on-surface-variant').filter(function() {
-    return $(this).text().trim().length > 50;
-  });
-  storyParagraphs.each(function(i) {
-    if (about.story.paragraphs[i]) {
-      $(this).text(about.story.paragraphs[i]);
-    }
-  });
+  // Story paragraphs
+  const storyContainer = $('main .space-y-6').first();
+  if (storyContainer.length) {
+    storyContainer.find('p').each(function(i) {
+      if (about.story.paragraphs[i]) {
+        $(this).text(about.story.paragraphs[i]);
+      }
+    });
+  }
 
   // Team members - update name, role, bio
   about.team.forEach((member, i) => {
-    // Find team cards by looking for the role/bio structure
-    const teamBlocks = $('main').find('h3, h4').filter(function() {
-      return $(this).text().trim().length > 2 && $(this).text().trim().length < 30;
-    });
+    // Find team cards by looking for the group container
+    const teamCards = $('main .grid').first().find('.group');
+    if (teamCards.eq(i).length) {
+      const card = teamCards.eq(i);
+      card.find('h3').text(member.name);
+      card.find('span.font-label-caps').text(member.role);
+      card.find('p').text(member.bio);
+      card.find('img').attr('alt', member.name);
+      card.find('img').attr('src', member.image);
+    }
   });
 
   fs.writeFileSync(path.join(DIST, 'about.html'), $.html());
