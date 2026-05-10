@@ -9,7 +9,7 @@ function checkAuth(req) {
   return verifyToken(token, process.env.ADMIN_PASSWORD);
 }
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -38,38 +38,47 @@ module.exports = (req, res) => {
   }
 
   if (req.method === 'PUT') {
-    // PUT /api/content?page=homepage
     const page = req.query.page;
     if (!page || !/^[a-z]+$/.test(page)) {
       return res.status(400).json({ error: 'Invalid page parameter' });
     }
 
-    const filePath = path.join(contentDir, `${page}.json`);
     const content = req.body;
-
     if (!content || typeof content !== 'object') {
       return res.status(400).json({ error: 'Invalid content body' });
     }
 
-    // Write to local filesystem
-    fs.writeFileSync(filePath, JSON.stringify(content, null, 2), 'utf-8');
-
-    // If GITHUB_TOKEN is set, also commit to GitHub
+    const contentString = JSON.stringify(content, null, 2);
     const githubToken = process.env.GITHUB_TOKEN;
-    const githubRepo = process.env.GITHUB_REPO; // e.g. "username/repo"
+    const githubRepo = process.env.GITHUB_REPO;
+    const isVercel = !!process.env.VERCEL;
 
-    if (githubToken && githubRepo) {
-      commitToGitHub(githubToken, githubRepo, `content/${page}.json`, JSON.stringify(content, null, 2))
-        .then(() => {
-          console.log(`Committed ${page}.json to GitHub`);
-        })
-        .catch(err => {
-          console.error('GitHub commit failed:', err.message);
-        });
+    if (isVercel) {
+      // On Vercel: filesystem is read-only — MUST use GitHub API
+      if (!githubToken || !githubRepo) {
+        return res.status(500).json({ error: 'GITHUB_TOKEN and GITHUB_REPO must be set on Vercel' });
+      }
+      try {
+        await commitToGitHub(githubToken, githubRepo, `content/${page}.json`, contentString);
+        return res.status(200).json({ success: true, committed: true });
+      } catch (err) {
+        console.error('GitHub commit failed:', err.message);
+        return res.status(500).json({ error: 'GitHub commit failed: ' + err.message });
+      }
+    } else {
+      // Local dev: write directly to filesystem
+      const filePath = path.join(contentDir, `${page}.json`);
+      fs.writeFileSync(filePath, contentString, 'utf-8');
+
+      // Also commit to GitHub if configured locally
+      if (githubToken && githubRepo) {
+        commitToGitHub(githubToken, githubRepo, `content/${page}.json`, contentString)
+          .catch(err => console.error('GitHub commit failed:', err.message));
+      }
+      return res.status(200).json({ success: true });
     }
-
-    return res.status(200).json({ success: true });
   }
+
 
   return res.status(405).json({ error: 'Method not allowed' });
 };
