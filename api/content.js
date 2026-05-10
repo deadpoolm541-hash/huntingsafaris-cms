@@ -1,13 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const crypto = require('crypto');
+const { verifyToken } = require('./auth');
 
-function verifyToken(req) {
+function checkAuth(req) {
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith('Bearer ')) return false;
   const token = auth.slice(7);
-  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-  return global._adminTokens && global._adminTokens.has(tokenHash);
+  return verifyToken(token, process.env.ADMIN_PASSWORD);
 }
 
 module.exports = (req, res) => {
@@ -16,7 +15,7 @@ module.exports = (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  if (!verifyToken(req)) {
+  if (!checkAuth(req)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
