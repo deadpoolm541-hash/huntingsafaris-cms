@@ -36,7 +36,11 @@
         "Step-by-Step Guided Hunting Experience",
         "Ethical Hunting & Field Preparation Guidance"
       ],
-      "gameSpecies": ["RED DEER", "FALLOW DEER", "WILD GOAT"],
+      "gameSpecies": [
+        "RED DEER",
+        "FALLOW DEER",
+        "WILD GOAT"
+      ],
       "gameNote": "(Species availability may vary by season)",
       "offerCard": {
         "heading": "WHAT WE OFFER!",
@@ -62,7 +66,7 @@
       "title": "Ultimate African Hunting Experience",
       "description": "Step into Africa's wild beauty with fully guided, beginner-friendly hunting package. Designed for a safe, exciting and unforgettable experience-featuring your original photos in the final brochure.",
       "inclusions": [
-        "Airport pick up and drop off",
+        "Airport pick up and drop off done",
         "Accomodation & All meals",
         "Daily Laundry service",
         "Professional Licensed Guides",
@@ -83,8 +87,16 @@
           "A mix of adventure, hunting, and wildlife encounters"
         ]
       },
-      "huntingIncluded": ["Impala", "Small Game Hunting", "Bird Shooting Experience"],
-      "additionalBigGame": ["Giraffe", "Zebra", "Wildebeest"],
+      "huntingIncluded": [
+        "Impala",
+        "Small Game Hunting",
+        "Bird Shooting Experience"
+      ],
+      "additionalBigGame": [
+        "Giraffe",
+        "Zebra",
+        "Wildebeest"
+      ],
       "offerCard": {
         "heading": "WHAT WE OFFER!",
         "duration": "8-DAYS PACKAGE",
@@ -113,12 +125,19 @@
       ],
       "highlightedInclusion": "1x Management Oryx or Springbuck or Warthog.",
       "inclusionNote": "All other trophy and management animals will be charged dynamically.",
-      "huntingIncluded": ["Oryx.", "Springbuck.", "Warthog.", "Baboon.", "Bird Shooting."],
+      "huntingIncluded": [
+        "Oryx.",
+        "Springbuck.",
+        "Warthog.",
+        "Baboon.",
+        "Bird Shooting."
+      ],
       "offerCard": {
         "heading": "WHAT WE OFFER!",
         "duration": "7-DAYS PACKAGE",
         "bonus": "+ FREE VISA SERVICE!"
-      }
+      },
+      "description": ""
     }
   ]
 }
