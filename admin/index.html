@@ -707,14 +707,38 @@
           field('sectionTitle', 'Title', data.sectionTitle),
         ]);
         (data.packages || []).forEach((pkg, i) => {
-          html += renderSection(`Package: ${pkg.title}`, [
+          let fields = [
             field(`packages.${i}.label`, 'Label', pkg.label),
             field(`packages.${i}.title`, 'Title', pkg.title),
             textarea(`packages.${i}.description`, 'Description', pkg.description || ''),
             textarea(`packages.${i}.inclusions`, 'Inclusions (one per line)', (pkg.inclusions || []).join('\n'), 'array'),
-            field(`packages.${i}.offerCard.duration`, 'Offer Duration', pkg.offerCard?.duration),
-            field(`packages.${i}.offerCard.bonus`, 'Offer Bonus', pkg.offerCard?.bonus),
-          ]);
+          ];
+
+          if (pkg.id === 'package-nz') {
+            fields.push(field(`packages.${i}.subtitle`, 'Subtitle', pkg.subtitle));
+            fields.push(textarea(`packages.${i}.beginnerFeatures`, 'Beginner Features (one per line)', (pkg.beginnerFeatures || []).join('\n'), 'array'));
+            fields.push(textarea(`packages.${i}.gameSpecies`, 'Game Species (one per line)', (pkg.gameSpecies || []).join('\n'), 'array'));
+            fields.push(field(`packages.${i}.gameNote`, 'Game Note', pkg.gameNote));
+            fields.push(field(`packages.${i}.whyChoose.heading`, 'Why Choose - Heading', pkg.whyChoose?.heading));
+            fields.push(textarea(`packages.${i}.whyChoose.points`, 'Why Choose - Points', (pkg.whyChoose?.points || []).join('\n'), 'array'));
+            fields.push(textarea(`packages.${i}.whyChoose.note`, 'Why Choose - Note', pkg.whyChoose?.note));
+          } else if (pkg.id === 'package-africa') {
+            fields.push(field(`packages.${i}.beginnerNote.heading`, 'Beginner Note - Heading', pkg.beginnerNote?.heading));
+            fields.push(field(`packages.${i}.beginnerNote.subtitle`, 'Beginner Note - Subtitle', pkg.beginnerNote?.subtitle));
+            fields.push(textarea(`packages.${i}.beginnerNote.points`, 'Beginner Note - Points', (pkg.beginnerNote?.points || []).join('\n'), 'array'));
+            fields.push(textarea(`packages.${i}.huntingIncluded`, 'Hunting Included (one per line)', (pkg.huntingIncluded || []).join('\n'), 'array'));
+            fields.push(textarea(`packages.${i}.additionalBigGame`, 'Additional Big Game (one per line)', (pkg.additionalBigGame || []).join('\n'), 'array'));
+          } else if (pkg.id === 'package-namibia') {
+            fields.push(textarea(`packages.${i}.highlightedInclusion`, 'Highlighted Inclusion', pkg.highlightedInclusion));
+            fields.push(textarea(`packages.${i}.inclusionNote`, 'Inclusion Note', pkg.inclusionNote));
+            fields.push(textarea(`packages.${i}.huntingIncluded`, 'Hunting Included (one per line)', (pkg.huntingIncluded || []).join('\n'), 'array'));
+          }
+
+          fields.push(field(`packages.${i}.offerCard.heading`, 'Offer Heading', pkg.offerCard?.heading));
+          fields.push(field(`packages.${i}.offerCard.duration`, 'Offer Duration', pkg.offerCard?.duration));
+          fields.push(field(`packages.${i}.offerCard.bonus`, 'Offer Bonus', pkg.offerCard?.bonus));
+
+          html += renderSection(`Package: ${pkg.title}`, fields);
         });
       }
 
