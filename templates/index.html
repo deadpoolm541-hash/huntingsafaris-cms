@@ -469,24 +469,50 @@
                 </div>
             </div>
         </section>
-        <!-- Expedition Camaraderie (Bento-style Grid) -->
-        <section class="bg-[#1B2B22] pt-16 sm:pt-section-gap pb-0">
-            <div class="pl-8 md:pl-margin-edge pr-8 md:pr-12 max-w-screen-xl mx-auto mb-16">
-                <div class="text-center">
-                    <span class="font-label-caps text-primary-fixed uppercase mb-4 block">Expert Guidance</span>
-                    <h2 class="font-headline-lg text-white text-2xl sm:text-4xl md:text-headline-lg mb-4">Mastery of the
-                        Terrain</h2>
-                    <p class="font-body-lg text-stone-400 max-w-2xl mx-auto">A successful harvest demands an intimate
-                        understanding of the wild. We guide every safari with seasoned expertise and profound respect
-                        for the land.</p>
-                    <div class="mt-10 flex justify-center">
-                        <a href="services.html"
-                            class="bg-primary-container border border-white/20 text-white px-10 py-4 font-serif text-lg tracking-tight hover:bg-stone-800 transition-all active:scale-95 duration-150 inline-block">
-                            Check Out Our Services
-                        </a>
+        <section class="bg-[#1B2B22] pt-8 sm:pt-12 pb-0">
+            <!-- Google Reviews -->
+            <div class="pl-8 md:pl-margin-edge pr-8 md:pr-12 max-w-screen-xl mx-auto pb-16">
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <div class="h-px bg-white/20 w-12"></div>
+                    <span class="font-label-caps text-primary-fixed uppercase tracking-[0.25em] text-sm sm:text-base font-semibold">testimonials</span>
+                    <div class="h-px bg-white/20 w-12"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 max-w-5xl mx-auto items-center">
+                    <!-- Left side: Rating badge & Review (7 cols) -->
+                    <div class="md:col-span-7 flex flex-col justify-center">
+
+
+                        <!-- Review Card -->
+                        <div class="bg-white/5 border border-white/10 rounded-xl p-6 md:p-8 backdrop-blur-sm hover:bg-white/10 transition-colors duration-300">
+                            <div class="mb-4">
+                                <p class="text-white font-serif font-medium text-lg">RINSHAD ISMAIL</p>
+                            </div>
+                            <div class="flex gap-0.5 mb-4">
+                                <span style="color:#FBBF24;font-size:16px">★</span>
+                                <span style="color:#FBBF24;font-size:16px">★</span>
+                                <span style="color:#FBBF24;font-size:16px">★</span>
+                                <span style="color:#FBBF24;font-size:16px">★</span>
+                                <span style="color:#FBBF24;font-size:16px">★</span>
+                            </div>
+                            <p class="text-stone-300 font-sans text-base leading-relaxed italic">
+                                "Everything was professionally organized. Had a wonderful, unforgettable hunting experience. The food, stay, and transportations were excellent."
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right side: Client Photo (5 cols) -->
+                    <div class="md:col-span-5 flex flex-col justify-center">
+                        <div class="group relative overflow-hidden rounded-xl border border-white/10 aspect-[4/3] w-full">
+                            <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                 src="homepage/section3/google_review_photo.jpg" 
+                                 alt="Expedition Photo from Google Review" 
+                                 loading="lazy" />
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div class="w-full overflow-hidden relative group">
                 <img class="w-full h-auto transition-transform duration-700 group-hover:scale-105"
                     data-alt="High-quality, cinematic photograph of a diverse hunting team consisting of two men and one woman in rugged field gear, focused and aiming their rifles during a professional expedition in a rugged wilderness."
@@ -784,9 +810,9 @@
                 // Loop every 3 seconds
                 setInterval(updateStoryStack, 3000);
             }
-
-
         });
+
+
 
         // Reveal bottom nav icons only after Material Symbols font is loaded
         document.fonts.ready.then(() => {

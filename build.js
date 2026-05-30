@@ -56,17 +56,17 @@ function buildHomepage() {
     if (storyBtn.length) storyBtn.text(homepage.story.ctaText);
   }
 
-  // Expertise section
-  const expertiseSection = $('section.bg-\\[\\#1B2B22\\]').first();
-  if (expertiseSection.length) {
-    expertiseSection.find('span.font-label-caps').first().text(homepage.expertise.label);
-    const titleEl = expertiseSection.find('h2').first();
-    if (titleEl.length) titleEl.text(homepage.expertise.title);
-    const descEl = expertiseSection.find('p.font-body-lg').first();
-    if (descEl.length) descEl.text(homepage.expertise.description);
-    const expBtn = expertiseSection.find('a.bg-primary-container').first();
-    if (expBtn.length) expBtn.text(homepage.expertise.ctaText);
-  }
+  // Expertise section elements have been removed from templates/index.html
+  // const expertiseSection = $('section.bg-\\[\\#1B2B22\\]').first();
+  // if (expertiseSection.length) {
+  //   expertiseSection.find('span.font-label-caps').first().text(homepage.expertise.label);
+  //   const titleEl = expertiseSection.find('h2').first();
+  //   if (titleEl.length) titleEl.text(homepage.expertise.title);
+  //   const descEl = expertiseSection.find('p.font-body-lg').first();
+  //   if (descEl.length) descEl.text(homepage.expertise.description);
+  //   const expBtn = expertiseSection.find('a.bg-primary-container').first();
+  //   if (expBtn.length) expBtn.text(homepage.expertise.ctaText);
+  // }
 
   // Team section - update names
   homepage.team.forEach((member, i) => {
