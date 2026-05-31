@@ -168,6 +168,13 @@
         .fonts-loaded nav .material-symbols-outlined {
             visibility: visible;
         }
+        /* Keep inline icons invisible until font is ready */
+        .btn-icon {
+            visibility: hidden;
+        }
+        .fonts-loaded .btn-icon {
+            visibility: visible;
+        }
 
         .field-note {
             background-color: #f6f3f2;
@@ -409,7 +416,7 @@
                 <div class="flex gap-4 opacity-0 animate-fade-in-up [animation-delay:400ms]">
                     <a href="services.html"
                         class="bg-white text-primary px-4 sm:px-8 py-3 sm:py-4 font-label-caps flex items-center gap-2 sm:gap-3 hover:bg-primary-fixed transition-colors text-xs sm:text-label-caps">
-                        EXPLORE OUR SERVICES <span class="material-symbols-outlined text-sm">north_east</span>
+                        EXPLORE OUR SERVICES <span class="material-symbols-outlined text-sm btn-icon">north_east</span>
                     </a>
                 </div>
             </div>
