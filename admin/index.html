@@ -9,6 +9,9 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     rel="stylesheet" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
     * {
       margin: 0;
@@ -430,6 +433,26 @@
       border-color: var(--accent)
     }
 
+    /* Billing page */
+    .billing-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px }
+    .billing-form .field { margin-bottom: 0 }
+    .billing-form .full-width { grid-column: 1 / -1 }
+    .billing-actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap }
+    .billing-actions .btn { flex: none }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border) }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent) }
+    .history-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px }
+    .history-table th, .history-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border) }
+    .history-table th { color: var(--text2); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600 }
+    .history-table tr:hover td { background: var(--surface2) }
+    .history-table .btn { padding: 6px 12px; font-size: 11px }
+    .contract-preview { background: #fff; color: #000; padding: 40px; margin-top: 16px; font-family: 'Times New Roman', serif; font-size: 13px; line-height: 1.6; max-height: 500px; overflow-y: auto; border: 1px solid var(--border) }
+    .contract-preview h2 { text-align: center; font-size: 16px; margin-bottom: 20px }
+    .billing-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px }
+    .billing-stat { background: var(--surface); border: 1px solid var(--border); padding: 20px; text-align: center }
+    .billing-stat .stat-num { font-size: 28px; font-weight: 700; color: var(--accent) }
+    .billing-stat .stat-label { font-size: 11px; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px }
+
     /* Responsive */
     @media(max-width:768px) {
       .sidebar {
@@ -454,6 +477,9 @@
         margin-left: 0;
         padding: 20px
       }
+
+      .billing-form { grid-template-columns: 1fr }
+      .billing-stats { grid-template-columns: 1fr }
     }
   </style>
 </head>
@@ -484,6 +510,7 @@
       <a href="#" data-page="about"><span class="material-symbols-outlined">info</span> About</a>
       <a href="#" data-page="contact"><span class="material-symbols-outlined">mail</span> Contact</a>
       <a href="#" data-page="global"><span class="material-symbols-outlined">settings</span> Global</a>
+      <a href="#" data-page="billing" style="border-top:1px solid var(--border);margin-top:8px;padding-top:20px"><span class="material-symbols-outlined">receipt_long</span> Billing</a>
       <a href="#" onclick="logout()" style="margin-top:auto;color:var(--danger)"><span
           class="material-symbols-outlined">logout</span> Logout</a>
     </nav>
@@ -491,7 +518,7 @@
       <h1 id="pageTitle">Homepage</h1>
       <p class="subtitle" id="pageSubtitle">Edit homepage content</p>
       <div id="editorArea"></div>
-      <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border)">
+      <div id="saveArea" style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border)">
         <button class="btn btn-primary" id="saveBtn" onclick="saveContent()">
           <span class="material-symbols-outlined">save</span> Save Changes
         </button>
@@ -559,10 +586,18 @@
     // Load content
     async function loadPage(page) {
       currentPage = page;
-      const titles = { homepage: 'Homepage', services: 'Services', gallery: 'Gallery', about: 'About', contact: 'Contact', global: 'Global Settings' };
-      const subtitles = { homepage: 'Hero, story, team & CTA', services: 'Hunting packages', gallery: 'Photos & layout', about: 'Story & team bios', contact: 'Channels & form', global: 'Site-wide settings' };
+      const titles = { homepage: 'Homepage', services: 'Services', gallery: 'Gallery', about: 'About', contact: 'Contact', global: 'Global Settings', billing: 'Billing' };
+      const subtitles = { homepage: 'Hero, story, team & CTA', services: 'Hunting packages', gallery: 'Photos & layout', about: 'Story & team bios', contact: 'Channels & form', global: 'Site-wide settings', billing: 'Generate contracts & invoices' };
       document.getElementById('pageTitle').textContent = titles[page] || page;
       document.getElementById('pageSubtitle').textContent = subtitles[page] || '';
+
+      // Billing page doesn't use the content API
+      if (page === 'billing') {
+        document.getElementById('saveArea').style.display = 'none';
+        renderBillingPage();
+        return;
+      }
+      document.getElementById('saveArea').style.display = '';
 
       try {
         const res = await fetch(`/api/content?page=${page}`, {
@@ -858,6 +893,601 @@
           showToast('Upload error', true);
         }
       }
+    }
+
+    // ─── BILLING / CONTRACT GENERATOR ───────────────────────────
+
+    function renderBillingPage() {
+      const area = document.getElementById('editorArea');
+      area.innerHTML = `
+        <!-- Contract Form -->
+        <div class="card">
+          <h3><span class="material-symbols-outlined">description</span> Generate Document</h3>
+          <div class="billing-form">
+            <div class="field">
+              <label>Client Name</label>
+              <input id="bill-clientName" placeholder="e.g. John Smith" />
+            </div>
+            <div class="field">
+              <label>Passport Number</label>
+              <input id="bill-passport" placeholder="e.g. AB1234567" />
+            </div>
+            <div class="field">
+              <label>Hunt Start Date</label>
+              <input id="bill-huntStart" type="date" />
+            </div>
+            <div class="field">
+              <label>Hunt End Date (optional)</label>
+              <input id="bill-huntEnd" type="date" />
+            </div>
+            <div class="field">
+              <label>Date / Issue Date</label>
+              <input id="bill-date" type="date" />
+            </div>
+            <div class="field full-width">
+              <label>Package / Notes (Contract only)</label>
+              <input id="bill-package" placeholder="e.g. Premium NZ Red Stag Safari" />
+            </div>
+
+            <div class="field full-width" style="margin-top:10px;border-top:1px solid var(--border);padding-top:16px">
+              <label style="color:var(--text);font-weight:600;font-size:14px">Invoice Specific Fields</label>
+            </div>
+            <div class="field">
+              <label>Invoice Number</label>
+              <input id="bill-invNumber" placeholder="e.g. INV-2026-001" />
+            </div>
+            <div class="field">
+              <label>Client Address</label>
+              <input id="bill-address" placeholder="e.g. 123 Main St, USA" />
+            </div>
+            <div class="field">
+              <label>Total Cost (USD)</label>
+              <input id="bill-totalCost" placeholder="e.g. 15000" type="number" />
+            </div>
+            <div class="field">
+              <label>Advance Payment (USD)</label>
+              <input id="bill-advance" placeholder="e.g. 7500" type="number" />
+            </div>
+            <div class="field">
+              <label>Balance Due Date</label>
+              <input id="bill-dueDate" type="date" />
+            </div>
+            <div class="field full-width">
+              <label>Description</label>
+              <textarea id="bill-desc" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-family:inherit;resize:vertical;min-height:60px">Advance payment received toward scheduled hunting trip. Remaining balance due as per agreed terms to secure and finalize booking.</textarea>
+            </div>
+          </div>
+          <div class="billing-actions">
+            <button class="btn btn-primary" onclick="generateContractPDF()">
+              <span class="material-symbols-outlined">picture_as_pdf</span> Generate Contract
+            </button>
+            <button class="btn btn-secondary" onclick="generateInvoicePDF()" style="background:var(--surface);border-color:var(--text);color:var(--text)">
+              <span class="material-symbols-outlined">receipt</span> Generate Invoice
+            </button>
+            <button class="btn btn-danger" onclick="resetBillingFields()" style="margin-left:auto;background:transparent;color:var(--danger)">
+              <span class="material-symbols-outlined">restart_alt</span> Reset Fields
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Set today's date as default
+      const dateInput = document.getElementById('bill-date');
+      if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+      }
+
+      // Initialize flatpickr for cross-browser calendar UI
+      setTimeout(() => {
+        flatpickr("input[type=date]", {
+          dateFormat: "Y-m-d",
+          allowInput: true
+        });
+      }, 50);
+    }
+
+    function resetBillingFields() {
+      document.getElementById('bill-clientName').value = '';
+      document.getElementById('bill-passport').value = '';
+      document.getElementById('bill-huntStart').value = '';
+      document.getElementById('bill-huntEnd').value = '';
+      document.getElementById('bill-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('bill-package').value = '';
+      document.getElementById('bill-invNumber').value = '';
+      document.getElementById('bill-address').value = '';
+      document.getElementById('bill-totalCost').value = '';
+      document.getElementById('bill-advance').value = '';
+      document.getElementById('bill-dueDate').value = '';
+      document.getElementById('bill-desc').value = 'Advance payment received toward scheduled hunting trip. Remaining balance due as per agreed terms to secure and finalize booking.';
+    }
+
+
+
+    // Load logo once and cache as base64
+    let logoBase64Cache = null;
+    async function getLogoBase64() {
+      if (logoBase64Cache) return logoBase64Cache;
+      try {
+        const res = await fetch('/logo1.png');
+        const blob = await res.blob();
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => { logoBase64Cache = reader.result; resolve(logoBase64Cache); };
+          reader.readAsDataURL(blob);
+        });
+      } catch (e) {
+        console.warn('Logo not found, skipping');
+        return null;
+      }
+    }
+
+    function formatDateNZ(dateStr) {
+      if (!dateStr) return '';
+      return new Date(dateStr).toLocaleDateString('en-NZ', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function buildHuntDatesString() {
+      const start = document.getElementById('bill-huntStart').value;
+      const end = document.getElementById('bill-huntEnd').value;
+      if (!start) return '';
+      const startFormatted = formatDateNZ(start);
+      if (!end) return startFormatted; // single date
+      return startFormatted + ' \u2013 ' + formatDateNZ(end); // date range
+    }
+
+    async function generateContractPDF() {
+      const clientName = document.getElementById('bill-clientName').value.trim();
+      const passport = document.getElementById('bill-passport').value.trim();
+      const huntDates = buildHuntDatesString();
+      const dateVal = document.getElementById('bill-date').value;
+      const packageName = document.getElementById('bill-package').value.trim();
+
+      if (!clientName || !huntDates) {
+        showToast('Client Name and Hunt Start Date are required', true);
+        return;
+      }
+
+      const formattedDate = formatDateNZ(dateVal);
+
+      await buildContractPDF(clientName, passport, huntDates, formattedDate, packageName);
+
+      showToast('Contract PDF generated!');
+    }
+
+    async function buildContractPDF(clientName, passport, huntDates, formattedDate, packageName) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pw = 210, ph = 297;
+      const ml = 30, mr = 30, mt = 25;
+      const cw = pw - ml - mr; // content width
+      let y = mt;
+
+      // ── Helper functions ──
+      function addText(text, x, yPos, opts = {}) {
+        doc.setFont(opts.font || 'times', opts.style || 'normal');
+        doc.setFontSize(opts.size || 11);
+        doc.setTextColor(opts.color || '#000000');
+        if (opts.align === 'center') {
+          doc.text(text, pw / 2, yPos, { align: 'center' });
+        } else {
+          doc.text(text, x, yPos);
+        }
+      }
+
+      function addWrappedText(text, x, yPos, maxWidth, opts = {}) {
+        doc.setFont(opts.font || 'times', opts.style || 'normal');
+        doc.setFontSize(opts.size || 11);
+        doc.setTextColor(opts.color || '#000000');
+        const lines = doc.splitTextToSize(text, maxWidth);
+        const lineHeight = (opts.size || 11) * 0.45;
+        lines.forEach(line => {
+          if (yPos > ph - 30) { doc.addPage(); yPos = mt; }
+          doc.text(line, x, yPos);
+          yPos += lineHeight;
+        });
+        return yPos;
+      }
+
+      function checkPage(needed) {
+        if (y > ph - needed) { doc.addPage(); y = mt; }
+      }
+
+      // ── PAGE 1: CONTRACT ──
+
+      // Logo
+      const logoData = await getLogoBase64();
+      if (logoData) {
+        const logoW = 35, logoH = 35;
+        doc.addImage(logoData, 'PNG', (pw - logoW) / 2, y, logoW, logoH);
+        y += logoH + 4;
+      } else {
+        y += 5;
+      }
+
+      // Company name
+      addText('ULTIMATE', 0, y, { font: 'helvetica', style: 'bold', size: 18, align: 'center' });
+      y += 7;
+      addText('HUNTING SAFARI', 0, y, { font: 'helvetica', style: 'normal', size: 12, align: 'center' });
+      y += 12;
+
+      // Title
+      addText('PREMIUM INTERNATIONAL HUNTING SAFARI', 0, y, { font: 'helvetica', style: 'bold', size: 13, align: 'center' });
+      y += 6;
+      addText('AGREEMENT', 0, y, { font: 'helvetica', style: 'bold', size: 13, align: 'center' });
+      y += 6;
+
+      // Divider
+      doc.setDrawColor(0); doc.setLineWidth(0.5);
+      doc.line(ml, y, pw - mr, y);
+      y += 10;
+
+      // Intro
+      y = addWrappedText(
+        'This Agreement is entered into between Ultimate Hunting Safaris ("Company") and the undersigned Client.',
+        ml, y, cw, { style: 'italic', size: 10 }
+      );
+      y += 6;
+
+      // ── Contract sections ──
+      const sections = [
+        {
+          title: '1. BOOKING & PAYMENT TERMS',
+          bullets: [
+            'A 50% non-refundable deposit is required to secure booking dates.',
+            'The remaining 50% balance must be paid no later than 30 days prior to the commencement of the hunt.',
+            'Failure to pay the remaining balance within the required timeframe may result in cancellation of the booking without refund of deposit.',
+          ]
+        },
+        {
+          title: '2. CANCELLATION POLICY',
+          bullets: [
+            'Deposit is non-refundable.',
+            'Cancellation more than 60 days before hunt: Any additional payments (excluding deposit) refundable.',
+            'Cancellation within 30 days of hunt: No refund.',
+            'Company reserves the right to reschedule due to weather, safety, or unforeseen circumstances.',
+          ]
+        },
+        {
+          title: '3. HEALTH & SAFETY',
+          bullets: [
+            'The Company complies with the Health and Safety at Work Act 2015 (New Zealand).',
+            'Clients must follow all guide instructions regarding firearms and field safety.',
+            'Clients must declare any medical condition that may affect participation.',
+          ]
+        },
+        {
+          title: '4. LIABILITY WAIVER',
+          bullets: [
+            'Hunting involves inherent risks including serious injury or death.',
+            'The Company, its staff, guides, and affiliates shall not be held liable for accidents, injuries, loss, or damage occurring during the trip.',
+            'Clients participate entirely at their own risk.',
+          ]
+        },
+        {
+          title: '5. INSURANCE',
+          bullets: [
+            'International clients are strongly advised to obtain comprehensive travel and hunting insurance covering medical evacuation, trip cancellation, and personal liability.',
+          ]
+        },
+        {
+          title: '6. GOVERNING LAW',
+          bullets: [
+            'This Agreement is governed by the laws of New Zealand.',
+          ]
+        },
+      ];
+
+      sections.forEach(sec => {
+        checkPage(25);
+        addText(sec.title, ml, y, { font: 'helvetica', style: 'bold', size: 10 });
+        y += 5;
+        sec.bullets.forEach(b => {
+          checkPage(12);
+          y = addWrappedText('• ' + b, ml + 2, y, cw - 4, { size: 9.5 });
+          y += 1;
+        });
+        y += 4;
+      });
+
+      // Signing clause
+      checkPage(50);
+      y += 2;
+      y = addWrappedText(
+        'By signing below, the Client confirms they have read, understood, and agree to the terms of this Agreement.',
+        ml, y, cw, { size: 10 }
+      );
+      y += 10;
+
+      // Dynamic client fields
+      const fieldLineLen = 70;
+      const fields = [
+        ['Client Name:', clientName],
+        ['Passport Number:', passport],
+        ['Hunt Dates:', huntDates],
+      ];
+      
+      if (packageName) {
+        fields.push(['Package / Notes:', packageName]);
+      }
+      
+      fields.push(
+        ['Client Signature:', ''],
+        ['Date:', formattedDate]
+      );
+
+      fields.forEach(([label, value]) => {
+        checkPage(12);
+        addText(label, ml, y, { size: 10 });
+        if (value) {
+          addText(value, ml + 42, y, { size: 10, style: 'bold' });
+        }
+        // Underline
+        doc.setDrawColor(0); doc.setLineWidth(0.3);
+        doc.line(ml + 40, y + 1, ml + 40 + fieldLineLen, y + 1);
+        y += 9;
+      });
+
+      // ── PAGE 3: BANKING DETAILS ──
+      doc.addPage();
+      y = mt + 10;
+
+      addText('BANKING DETAILS (FOR PAYMENTS)', ml, y, { font: 'helvetica', style: 'bold', size: 14 });
+      y += 12;
+
+      const bankFields = [
+        ['Account Name:', 'THE ULTIMATE HUNTING SAFARIS LTD'],
+        ['Bank Name:', 'ANZ Bank'],
+        ['Account Number:', '06-0709-0972990-00'],
+        ['SWIFT / BIC Code:', 'ANZBNZ22'],
+      ];
+
+      bankFields.forEach(([label, value]) => {
+        addText(label, ml, y, { size: 10, style: 'bold' });
+        addText(value, ml + 45, y, { size: 10 });
+        y += 7;
+      });
+
+      y += 6;
+      addText('Payment Reference: ' + clientName + ' \u2013 ' + huntDates, ml, y, { size: 10, style: 'bold' });
+      y += 12;
+
+      y = addWrappedText(
+        'All bank charges, international transfer fees, and currency conversion fees are the responsibility of the Client.',
+        ml, y, cw, { size: 10, style: 'italic' }
+      );
+
+      // Save
+      const fileName = `Contract_${clientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(fileName);
+    }
+
+    async function generateInvoicePDF() {
+      const clientName = document.getElementById('bill-clientName').value.trim();
+      const passport = document.getElementById('bill-passport').value.trim();
+      const address = document.getElementById('bill-address').value.trim();
+      const invNumber = document.getElementById('bill-invNumber').value.trim();
+      const issueDateVal = document.getElementById('bill-date').value;
+      const totalCost = document.getElementById('bill-totalCost').value.trim() || '0';
+      const advance = document.getElementById('bill-advance').value.trim() || '0';
+      const balance = (parseFloat(totalCost) - parseFloat(advance)).toString();
+      const dueDateVal = document.getElementById('bill-dueDate').value;
+      const desc = document.getElementById('bill-desc').value.trim();
+      
+      const issueDate = formatDateNZ(issueDateVal) || formatDateNZ(new Date());
+      const dueDate = formatDateNZ(dueDateVal);
+      const huntDates = buildHuntDatesString(); // for history
+
+      if (!clientName || !passport) {
+        showToast('Client Name and Passport Number are required', true);
+        return;
+      }
+
+      const invData = {
+        type: 'invoice', clientName, passport, address, invNumber, issueDate, totalCost, advance, balance, dueDate, desc, huntDates, createdAt: new Date().toISOString()
+      };
+
+      await buildInvoicePDF(invData);
+
+      showToast('Invoice PDF generated!');
+    }
+
+    async function buildInvoicePDF(data) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pw = 210, ph = 297;
+      const ml = 30, mr = 30, mt = 25;
+      const cw = pw - ml - mr;
+      let y = mt;
+
+      function addText(text, x, yPos, opts = {}) {
+        doc.setFont(opts.font || 'helvetica', opts.style || 'normal');
+        doc.setFontSize(opts.size || 10);
+        doc.setTextColor(opts.color || '#000000');
+        if (opts.align === 'center') {
+          doc.text(text, pw / 2, yPos, { align: 'center' });
+        } else if (opts.align === 'right') {
+          doc.text(text, pw - mr, yPos, { align: 'right' });
+        } else {
+          doc.text(text, x, yPos);
+        }
+      }
+
+      function addWrappedText(text, x, yPos, maxWidth, opts = {}) {
+        doc.setFont(opts.font || 'helvetica', opts.style || 'normal');
+        doc.setFontSize(opts.size || 10);
+        const lines = doc.splitTextToSize(text, maxWidth);
+        const lineHeight = (opts.size || 10) * 0.45;
+        lines.forEach(line => {
+          doc.text(line, x, yPos);
+          yPos += lineHeight;
+        });
+        return yPos;
+      }
+
+      // Logo
+      const logoData = await getLogoBase64();
+      if (logoData) {
+        const logoW = 35, logoH = 35;
+        doc.addImage(logoData, 'PNG', (pw - logoW) / 2, y, logoW, logoH);
+        y += logoH + 4;
+      } else {
+        y += 5;
+      }
+
+      addText('ULTIMATE', 0, y, { font: 'helvetica', style: 'bold', size: 18, align: 'center' });
+      y += 7;
+      addText('HUNTING SAFARI', 0, y, { font: 'helvetica', style: 'normal', size: 12, align: 'center' });
+      y += 12;
+
+      addText('Ultimate Hunting Safaris Limited', 0, y, { font: 'helvetica', style: 'bold', size: 14, align: 'center' });
+      y += 16;
+
+      addText('INVOICE', ml, y, { font: 'helvetica', style: 'bold', size: 12 });
+      y += 10;
+
+      // Meta fields
+      const metaLineLen = 60;
+      const drawLine = (yPos) => {
+        doc.setDrawColor(0); doc.setLineWidth(0.3);
+        doc.line(ml + 35, yPos + 1, ml + 35 + metaLineLen, yPos + 1);
+      };
+
+      addText('Issue Date:', ml, y, { size: 9 });
+      if (data.issueDate) addText(data.issueDate, ml + 35, y, { size: 9 });
+      drawLine(y);
+      y += 6;
+
+      addText('Invoice Number:', ml, y, { size: 9 });
+      if (data.invNumber) addText(data.invNumber, ml + 35, y, { size: 9 });
+      drawLine(y);
+      y += 10;
+
+      // Divider
+      doc.setDrawColor(0); doc.setLineWidth(0.5);
+      doc.line(ml, y, pw - mr, y);
+      y += 10;
+
+      // Bill To
+      addText('Bill To:', ml, y, { style: 'bold', size: 9 });
+      y += 6;
+      
+      const drawBillLine = (yPos) => {
+        doc.setDrawColor(0); doc.setLineWidth(0.3);
+        doc.line(ml + 30, yPos + 1, ml + 30 + metaLineLen, yPos + 1);
+      };
+
+      addText('Client Name:', ml, y, { size: 9 });
+      addText(data.clientName, ml + 30, y, { size: 9 }); drawBillLine(y); y += 6;
+      
+      addText('Passport Number:', ml, y, { size: 9 });
+      addText(data.passport || '', ml + 30, y, { size: 9 }); drawBillLine(y); y += 6;
+      
+      addText('Address:', ml, y, { size: 9 });
+      addText(data.address || '', ml + 30, y, { size: 9 }); drawBillLine(y); y += 12;
+
+      // Financials Table
+      const tX1 = ml;
+      const tX2 = ml + cw * 0.65;
+      const tX3 = pw - mr;
+      
+      // Draw table borders
+      doc.setDrawColor(150); doc.setLineWidth(0.3);
+      doc.line(tX1, y - 5, tX3, y - 5);
+      
+      const formatCurrency = (val) => Number(val).toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+      addText('Total Hunting Trip Cost:', tX1, y, { size: 9 });
+      addText('USD ' + formatCurrency(data.totalCost), tX2, y, { size: 9 });
+      doc.setDrawColor(0); doc.setLineWidth(0.2); doc.line(tX2, y + 1, tX3, y + 1);
+      y += 8;
+
+      addText('Advance Payment Received:', tX1, y, { size: 9 });
+      addText('USD ' + formatCurrency(data.advance), tX2, y, { size: 9 });
+      doc.line(tX2, y + 1, tX3, y + 1);
+      y += 8;
+
+      addText('Remaining Balance Due:', tX1, y, { size: 9 });
+      addText('USD ' + formatCurrency(data.balance), tX2, y, { size: 9 });
+      doc.line(tX2, y + 1, tX3, y + 1);
+      y += 8;
+
+      addText('Balance Due Date:', tX1, y, { size: 9 });
+      addText(data.dueDate || '', tX2, y, { size: 9 });
+      doc.line(tX2, y + 1, tX3, y + 1);
+      y += 5;
+      
+      doc.setDrawColor(150); doc.setLineWidth(0.3);
+      doc.line(tX1, y, tX3, y);
+      y += 10;
+
+      // Description
+      addText('Description:', ml, y, { style: 'bold', size: 9 });
+      y += 5;
+      y = addWrappedText(data.desc || '', ml, y, cw, { size: 9 });
+      y += 6;
+
+      // Policies
+      addText('Cancellation Policy:', ml, y, { style: 'bold', size: 9 });
+      y += 5;
+      y = addWrappedText('Advance payments are strictly non-refundable. In the event of cancellation by the client for any reason, the deposit will be forfeited.', ml, y, cw, { size: 9 });
+      y += 6;
+
+      addText('Rescheduling Policy:', ml, y, { style: 'bold', size: 9 });
+      y += 5;
+      y = addWrappedText('Rescheduling requests are subject to availability and must be made in writing at least 30 days prior to the scheduled hunt. Approved rescheduled bookings may transfer the deposit to a new agreed date within the same calendar year.', ml, y, cw, { size: 9 });
+
+      // Save
+      const fileName = `Invoice_${data.clientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(fileName);
+    }
+
+    async function generateBankingPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pw = 210, ml = 30, mr = 30, mt = 25, cw = pw - ml - mr;
+      let y = mt;
+
+      // Logo
+      const logoData = await getLogoBase64();
+      if (logoData) {
+        doc.addImage(logoData, 'PNG', (pw - 35) / 2, y, 35, 35);
+        y += 40;
+      }
+
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+      doc.text('ULTIMATE', pw / 2, y, { align: 'center' }); y += 7;
+      doc.setFontSize(12); doc.setFont('helvetica', 'normal');
+      doc.text('HUNTING SAFARI', pw / 2, y, { align: 'center' }); y += 15;
+
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
+      doc.text('BANKING DETAILS (FOR PAYMENTS)', ml, y); y += 12;
+
+      const bankFields = [
+        ['Account Name:', 'THE ULTIMATE HUNTING SAFARIS LTD'],
+        ['Bank Name:', 'ANZ Bank'],
+        ['Account Number:', '06-0709-0972990-00'],
+        ['SWIFT / BIC Code:', 'ANZBNZ22'],
+      ];
+
+      bankFields.forEach(([label, value]) => {
+        doc.setFont('times', 'bold'); doc.setFontSize(10);
+        doc.text(label, ml, y);
+        doc.setFont('times', 'normal');
+        doc.text(value, ml + 45, y);
+        y += 7;
+      });
+
+      y += 6;
+      doc.setFont('times', 'bold'); doc.setFontSize(10);
+      doc.text('Payment Reference: Client Name + Hunt Date', ml, y);
+      y += 12;
+
+      doc.setFont('times', 'italic'); doc.setFontSize(10);
+      const lines = doc.splitTextToSize('All bank charges, international transfer fees, and currency conversion fees are the responsibility of the Client.', cw);
+      doc.text(lines, ml, y);
+
+      doc.save('Banking_Details_UHS.pdf');
+      showToast('Banking Details PDF generated!');
     }
 
     // Toast
