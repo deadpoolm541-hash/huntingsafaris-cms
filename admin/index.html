@@ -924,10 +924,7 @@
               <label>Date / Issue Date</label>
               <input id="bill-date" type="date" />
             </div>
-            <div class="field full-width">
-              <label>Package / Notes (Contract only)</label>
-              <input id="bill-package" placeholder="e.g. Premium NZ Red Stag Safari" />
-            </div>
+
 
             <div class="field full-width" style="margin-top:10px;border-top:1px solid var(--border);padding-top:16px">
               <label style="color:var(--text);font-weight:600;font-size:14px">Invoice Specific Fields</label>
@@ -937,25 +934,19 @@
               <input id="bill-invNumber" placeholder="e.g. INV-2026-001" />
             </div>
             <div class="field">
-              <label>Client Address</label>
-              <input id="bill-address" placeholder="e.g. 123 Main St, USA" />
+              <label>Destination</label>
+              <input id="bill-address" placeholder="e.g. Port Elizabeth" />
             </div>
             <div class="field">
-              <label>Total Cost (USD)</label>
-              <input id="bill-totalCost" placeholder="e.g. 15000" type="number" />
+              <label>Package Price (USD)</label>
+              <input id="bill-totalCost" placeholder="e.g. 3900" type="number" />
             </div>
             <div class="field">
-              <label>Advance Payment (USD)</label>
-              <input id="bill-advance" placeholder="e.g. 7500" type="number" />
+              <label>Deposit (USD)</label>
+              <input id="bill-advance" placeholder="e.g. 1300" type="number" />
             </div>
-            <div class="field">
-              <label>Balance Due Date</label>
-              <input id="bill-dueDate" type="date" />
-            </div>
-            <div class="field full-width">
-              <label>Description</label>
-              <textarea id="bill-desc" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-family:inherit;resize:vertical;min-height:60px">Advance payment received toward scheduled hunting trip. Remaining balance due as per agreed terms to secure and finalize booking.</textarea>
-            </div>
+
+
           </div>
           <div class="billing-actions">
             <button class="btn btn-primary" onclick="generateContractPDF()">
@@ -992,13 +983,10 @@
       document.getElementById('bill-huntStart').value = '';
       document.getElementById('bill-huntEnd').value = '';
       document.getElementById('bill-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('bill-package').value = '';
       document.getElementById('bill-invNumber').value = '';
       document.getElementById('bill-address').value = '';
       document.getElementById('bill-totalCost').value = '';
       document.getElementById('bill-advance').value = '';
-      document.getElementById('bill-dueDate').value = '';
-      document.getElementById('bill-desc').value = 'Advance payment received toward scheduled hunting trip. Remaining balance due as per agreed terms to secure and finalize booking.';
     }
 
 
@@ -1035,12 +1023,30 @@
       return startFormatted + ' \u2013 ' + formatDateNZ(end); // date range
     }
 
+    function formatDateShort(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return [
+        String(d.getDate()).padStart(2, '0'),
+        String(d.getMonth() + 1).padStart(2, '0'),
+        d.getFullYear()
+      ].join('/');
+    }
+
+    function buildHuntDatesShort() {
+      const start = document.getElementById('bill-huntStart').value;
+      const end = document.getElementById('bill-huntEnd').value;
+      if (!start) return '';
+      const startFmt = formatDateShort(start);
+      if (!end) return startFmt;
+      return startFmt + ' \u2013 ' + formatDateShort(end);
+    }
+
     async function generateContractPDF() {
       const clientName = document.getElementById('bill-clientName').value.trim();
       const passport = document.getElementById('bill-passport').value.trim();
       const huntDates = buildHuntDatesString();
       const dateVal = document.getElementById('bill-date').value;
-      const packageName = document.getElementById('bill-package').value.trim();
 
       if (!clientName || !huntDates) {
         showToast('Client Name and Hunt Start Date are required', true);
@@ -1049,12 +1055,12 @@
 
       const formattedDate = formatDateNZ(dateVal);
 
-      await buildContractPDF(clientName, passport, huntDates, formattedDate, packageName);
+      await buildContractPDF(clientName, passport, huntDates, formattedDate);
 
       showToast('Contract PDF generated!');
     }
 
-    async function buildContractPDF(clientName, passport, huntDates, formattedDate, packageName) {
+    async function buildContractPDF(clientName, passport, huntDates, formattedDate) {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
       const pw = 210, ph = 297;
@@ -1111,10 +1117,8 @@
       y += 12;
 
       // Title
-      addText('PREMIUM INTERNATIONAL HUNTING SAFARI', 0, y, { font: 'helvetica', style: 'bold', size: 13, align: 'center' });
-      y += 6;
-      addText('AGREEMENT', 0, y, { font: 'helvetica', style: 'bold', size: 13, align: 'center' });
-      y += 6;
+      addText('ULTIMATE HUNTING SAFARI AGREEMENT', 0, y, { font: 'helvetica', style: 'bold', size: 14, align: 'center' });
+      y += 8;
 
       // Divider
       doc.setDrawColor(0); doc.setLineWidth(0.5);
@@ -1131,62 +1135,171 @@
       // ── Contract sections ──
       const sections = [
         {
-          title: '1. BOOKING & PAYMENT TERMS',
-          bullets: [
-            'A 50% non-refundable deposit is required to secure booking dates.',
-            'The remaining 50% balance must be paid no later than 30 days prior to the commencement of the hunt.',
-            'Failure to pay the remaining balance within the required timeframe may result in cancellation of the booking without refund of deposit.',
+          title: '1. PACKAGE PRICE INCLUDES',
+          content: [
+            '• Pick-up from the local airport on the day of arrival and road transfer to the lodge',
+            '• 6 nights full board accommodation in double rooms (2 hunters per room), all rooms air-conditioned and with ensuite bathroom',
+            '• All drinks during your stay (alcoholic and non-alcoholic drinks)',
+            '• Service of 2 professional hunters for a group of 4 to 6 hunters during 5 hunting days',
+            '• 1 non-trophy Impala OR 1 non-trophy Common Springbuck Or 1 non-trophy Warthog per hunter',
+            '• 1 Trophy Blesbuck or 1 non-trophy Blue Wildebeest or 1 Zebra for the entire group together (so not per hunter)',
+            '• Rifle rental and ammo',
+            '• Drop-off at the local airport on the day of departure',
+            '• Daily laundry service',
+            '• Local hunting license',
+            '• All transport on the terrain with 4x4',
+            '• Field preparation of the trophies'
           ]
         },
         {
-          title: '2. CANCELLATION POLICY',
-          bullets: [
-            'Deposit is non-refundable.',
-            'Cancellation more than 60 days before hunt: Any additional payments (excluding deposit) refundable.',
-            'Cancellation within 30 days of hunt: No refund.',
-            'Company reserves the right to reschedule due to weather, safety, or unforeseen circumstances.',
+          title: '2. PACKAGE PRICE EXCLUDES',
+          content: [
+            '• International flights',
+            '• Taxidermy & shipping',
+            '• Gratuities',
+            '• Additional trophy fees'
           ]
         },
         {
-          title: '3. HEALTH & SAFETY',
-          bullets: [
-            'The Company complies with the Health and Safety at Work Act 2015 (New Zealand).',
-            'Clients must follow all guide instructions regarding firearms and field safety.',
-            'Clients must declare any medical condition that may affect participation.',
+          title: '3. LIABILITY WAIVER & INDEMNITY',
+          isMainHeading: true,
+          content: [
+            'The client acknowledges that hunting, shooting sports, and outdoor adventure activities involve inherent risks that cannot be completely eliminated, despite all reasonable precautions taken by Ultimate Hunting Safaris.',
+            'By signing this agreement, the client confirms that they voluntarily participate in all activities at their own risk and accept full responsibility for their own actions and decisions during the safari.',
+            'To the maximum extent permitted by the laws of the country in which the safari takes place, Ultimate Hunting Safaris, its directors, employees, Professional Hunters, guides, landowners, contractors, and affiliated partners shall not be liable for any loss, injury, illness, death, damage, delay, theft, or expense arising from or connected with participation in the safari, including but not limited to:',
+            '• Firearm-related incidents',
+            '• Wildlife encounters',
+            '• Vehicle or road accidents',
+            '• Natural disasters or severe weather',
+            '• Disease outbreaks or infectious illnesses',
+            '• Travel delays or airline disruptions',
+            '• Equipment failure',
+            '• Actions of third parties',
+            'The client agrees to indemnify and hold harmless Ultimate Hunting Safaris, its directors, employees, Professional Hunters, guides, contractors, landowners, and affiliated partners against any claims, liabilities, damages, legal costs, or expenses arising from the client’s negligent, reckless, unlawful, or unsafe conduct during the safari.',
+            'Nothing in this agreement excludes or limits any rights or protections that cannot legally be excluded under the applicable laws of the country where the safari is conducted.'
           ]
         },
         {
-          title: '4. LIABILITY WAIVER',
-          bullets: [
-            'Hunting involves inherent risks including serious injury or death.',
-            'The Company, its staff, guides, and affiliates shall not be held liable for accidents, injuries, loss, or damage occurring during the trip.',
-            'Clients participate entirely at their own risk.',
+          title: 'Fitness to Participate',
+          isSubheading: true,
+          content: [
+            'The client confirms that they are physically and mentally fit to participate in hunting activities and have disclosed any medical conditions, allergies, medications, or physical limitations that may affect their participation.',
+            'Ultimate Hunting Safaris reserves the right to refuse or discontinue participation if it reasonably believes a client’s condition presents a safety risk to themselves or others.'
           ]
         },
         {
-          title: '5. INSURANCE',
-          bullets: [
-            'International clients are strongly advised to obtain comprehensive travel and hunting insurance covering medical evacuation, trip cancellation, and personal liability.',
+          title: 'Firearms & Ammunition',
+          isSubheading: true,
+          content: [
+            'Clients using their own firearms are responsible for ensuring they comply with all import, export, licensing, transport, and storage requirements applicable in the country where the safari takes place.',
+            'Clients using rifles supplied by Ultimate Hunting Safaris agree to use them responsibly, follow all safety instructions, and accept responsibility for any loss or damage resulting from negligent or intentional misuse.'
           ]
         },
         {
-          title: '6. GOVERNING LAW',
-          bullets: [
-            'This Agreement is governed by the laws of New Zealand.',
+          title: 'Force Majeure',
+          isSubheading: true,
+          content: [
+            'Ultimate Hunting Safaris shall not be liable for delays, cancellations, or changes caused by circumstances beyond its reasonable control, including but not limited to:',
+            '• Government restrictions or travel advisories',
+            '• War, civil unrest, or terrorism',
+            '• Disease outbreaks or pandemics',
+            '• Natural disasters',
+            '• Floods, fires, earthquakes, or severe weather',
+            '• Airline disruptions or border closures',
+            '• Industrial action or transport interruptions',
+            'Where practical, Ultimate Hunting Safaris will work with clients to reschedule the safari or transfer payments to a future booking in accordance with the Booking and Cancellation Policy.'
           ]
         },
+        {
+          title: '4. HEALTH, SAFETY & CLIENT RESPONSIBILITIES',
+          isMainHeading: true,
+          content: [
+            'The safety and wellbeing of all guests, staff and the public is our highest priority. Hunting activities are conducted in accordance with the applicable laws and regulations of the country in which the safari takes place.',
+            'The client agrees to:',
+            '• Follow all instructions given by the Professional Hunter (PH), guide, or host at all times.',
+            '• Handle firearms safely and only load or discharge a firearm when instructed.',
+            '• Never consume alcohol or recreational drugs before or during any hunting activity.',
+            '• Wear suitable clothing and sturdy footwear appropriate for hunting terrain and weather conditions.',
+            '• Immediately report any illness, injury, medical condition, allergy, or medication that may affect participation.',
+            '• Respect wildlife, livestock, private property, local communities, and the environment.',
+            '• Comply with all firearm, hunting, conservation, and biosecurity laws applicable in the country where the hunt takes place.',
+            '• Follow all vehicle safety requirements, including wearing seatbelts whenever available.'
+          ]
+        },
+        {
+          title: 'Medical Emergencies',
+          isSubheading: true,
+          content: [
+            'Ultimate Hunting Safaris will provide reasonable assistance in arranging emergency medical treatment if required. Any costs associated with medical treatment, ambulance services, evacuation, hospitalisation, or repatriation are the sole responsibility of the client.'
+          ]
+        },
+        {
+          title: 'Insurance',
+          isSubheading: true,
+          content: [
+            'All clients are strongly advised to obtain comprehensive travel insurance covering:',
+            '• Medical expenses',
+            '• Emergency medical evacuation',
+            '• Personal accident',
+            '• Trip cancellation or interruption',
+            '• Firearm loss or damage (where applicable)',
+            '• Personal belongings',
+            '• Public liability (where available)'
+          ]
+        },
+        {
+          title: 'Inherent Risk',
+          isSubheading: true,
+          content: [
+            'The client acknowledges that hunting and outdoor activities involve inherent risks, including but not limited to:',
+            '• Firearm use',
+            '• Wild animal encounters',
+            '• Uneven or rugged terrain',
+            '• Rivers, mountains, forests, and remote locations',
+            '• Vehicle travel on unsealed roads',
+            '• Changing weather conditions',
+            '• Slips, trips, falls, bites, stings, and other natural hazards',
+            'The client voluntarily accepts these risks and participates entirely at their own risk.'
+          ]
+        },
+        {
+          title: 'Right to Refuse Participation',
+          isSubheading: true,
+          content: [
+            'Ultimate Hunting Safaris reserves the right to suspend or terminate any hunting activity, without refund, if a client:',
+            '• Acts in an unsafe or reckless manner;',
+            '• Is under the influence of alcohol or drugs during hunting activities;',
+            '• Refuses to follow safety instructions; or',
+            '• Places themselves, other guests, staff, or wildlife at unnecessary risk.'
+          ]
+        }
       ];
 
       sections.forEach(sec => {
         checkPage(25);
-        addText(sec.title, ml, y, { font: 'helvetica', style: 'bold', size: 10 });
-        y += 5;
-        sec.bullets.forEach(b => {
-          checkPage(12);
-          y = addWrappedText('• ' + b, ml + 2, y, cw - 4, { size: 9.5 });
-          y += 1;
-        });
-        y += 4;
+        if (sec.isMainHeading) {
+          addText(sec.title, ml, y, { font: 'helvetica', style: 'bold', size: 12 });
+          y += 6;
+        } else if (sec.isSubheading) {
+          addText(sec.title, ml, y, { font: 'helvetica', style: 'bold', size: 10 });
+          y += 5;
+        } else {
+          addText(sec.title, ml, y, { font: 'helvetica', style: 'bold', size: 10 });
+          y += 5;
+        }
+        
+        if (sec.content) {
+          sec.content.forEach(item => {
+            checkPage(15);
+            if (item.startsWith('• ')) {
+              y = addWrappedText(item, ml + 2, y, cw - 4, { size: 9.5 });
+            } else {
+              y = addWrappedText(item, ml, y, cw, { size: 9.5 });
+            }
+            y += 2; // Extra spacing between lines
+          });
+        }
+        y += 6; // Extra spacing after each section
       });
 
       // Signing clause
@@ -1205,11 +1318,6 @@
         ['Passport Number:', passport],
         ['Hunt Dates:', huntDates],
       ];
-      
-      if (packageName) {
-        fields.push(['Package / Notes:', packageName]);
-      }
-      
       fields.push(
         ['Client Signature:', ''],
         ['Date:', formattedDate]
@@ -1227,34 +1335,7 @@
         y += 9;
       });
 
-      // ── PAGE 3: BANKING DETAILS ──
-      doc.addPage();
-      y = mt + 10;
 
-      addText('BANKING DETAILS (FOR PAYMENTS)', ml, y, { font: 'helvetica', style: 'bold', size: 14 });
-      y += 12;
-
-      const bankFields = [
-        ['Account Name:', 'THE ULTIMATE HUNTING SAFARIS LTD'],
-        ['Bank Name:', 'ANZ Bank'],
-        ['Account Number:', '06-0709-0972990-00'],
-        ['SWIFT / BIC Code:', 'ANZBNZ22'],
-      ];
-
-      bankFields.forEach(([label, value]) => {
-        addText(label, ml, y, { size: 10, style: 'bold' });
-        addText(value, ml + 45, y, { size: 10 });
-        y += 7;
-      });
-
-      y += 6;
-      addText('Payment Reference: ' + clientName + ' \u2013 ' + huntDates, ml, y, { size: 10, style: 'bold' });
-      y += 12;
-
-      y = addWrappedText(
-        'All bank charges, international transfer fees, and currency conversion fees are the responsibility of the Client.',
-        ml, y, cw, { size: 10, style: 'italic' }
-      );
 
       // Save
       const fileName = `Contract_${clientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
@@ -1270,12 +1351,9 @@
       const totalCost = document.getElementById('bill-totalCost').value.trim() || '0';
       const advance = document.getElementById('bill-advance').value.trim() || '0';
       const balance = (parseFloat(totalCost) - parseFloat(advance)).toString();
-      const dueDateVal = document.getElementById('bill-dueDate').value;
-      const desc = document.getElementById('bill-desc').value.trim();
       
-      const issueDate = formatDateNZ(issueDateVal) || formatDateNZ(new Date());
-      const dueDate = formatDateNZ(dueDateVal);
-      const huntDates = buildHuntDatesString(); // for history
+      const issueDate = formatDateShort(issueDateVal) || formatDateShort(new Date());
+      const huntDates = buildHuntDatesShort();
 
       if (!clientName || !passport) {
         showToast('Client Name and Passport Number are required', true);
@@ -1283,7 +1361,7 @@
       }
 
       const invData = {
-        type: 'invoice', clientName, passport, address, invNumber, issueDate, totalCost, advance, balance, dueDate, desc, huntDates, createdAt: new Date().toISOString()
+        type: 'invoice', clientName, passport, address, invNumber, issueDate, totalCost, advance, balance, huntDates, createdAt: new Date().toISOString()
       };
 
       await buildInvoicePDF(invData);
@@ -1342,99 +1420,134 @@
       addText('Ultimate Hunting Safaris Limited', 0, y, { font: 'helvetica', style: 'bold', size: 14, align: 'center' });
       y += 16;
 
-      addText('INVOICE', ml, y, { font: 'helvetica', style: 'bold', size: 12 });
+      addText('LUXURY SAFARI INVOICE', ml, y, { font: 'helvetica', style: 'bold', size: 12 });
       y += 10;
 
-      // Meta fields
-      const metaLineLen = 60;
-      const drawLine = (yPos) => {
-        doc.setDrawColor(0); doc.setLineWidth(0.3);
-        doc.line(ml + 35, yPos + 1, ml + 35 + metaLineLen, yPos + 1);
-      };
+      const formatCurrency = (val) => val.toString();
+      const tblY = y;
+      const rowH = 10;
+      
+      const gridData = [
+        ['Invoice No.', data.invNumber || '', 'Trip Dates', data.huntDates || ''],
+        ['Client', data.clientName || '', 'Passport', data.passport || ''],
+        ['Destination', data.address || '', 'Package Price', 'USD' + formatCurrency(data.totalCost)],
+        ['Deposit', 'USD' + formatCurrency(data.advance), 'Balance Due', 'USD' + formatCurrency(data.balance)]
+      ];
 
-      addText('Issue Date:', ml, y, { size: 9 });
-      if (data.issueDate) addText(data.issueDate, ml + 35, y, { size: 9 });
-      drawLine(y);
-      y += 6;
+      doc.setDrawColor(100);
+      doc.setLineWidth(0.2);
 
-      addText('Invoice Number:', ml, y, { size: 9 });
-      if (data.invNumber) addText(data.invNumber, ml + 35, y, { size: 9 });
-      drawLine(y);
-      y += 10;
-
-      // Divider
-      doc.setDrawColor(0); doc.setLineWidth(0.5);
+      const xCols = [ml, ml + 30, ml + 75, ml + 105, pw - mr];
+      
+      for (let r = 0; r < gridData.length; r++) {
+        // Horizontal line top
+        doc.line(ml, y, pw - mr, y);
+        
+        let rowData = gridData[r];
+        let maxLines = 1;
+        
+        const colW = [xCols[1]-xCols[0]-4, xCols[2]-xCols[1]-4, xCols[3]-xCols[2]-4, xCols[4]-xCols[3]-4];
+        
+        for (let c = 0; c < 4; c++) {
+          doc.setFont('helvetica', (c === 0 || c === 2) ? 'bold' : 'normal');
+          doc.setFontSize(10);
+          const lines = doc.splitTextToSize(rowData[c], colW[c]);
+          maxLines = Math.max(maxLines, lines.length);
+          lines.forEach((line, idx) => {
+            doc.text(line, xCols[c] + 2, y + 6.5 + (idx * 4.5));
+          });
+        }
+        
+        y += (maxLines > 1) ? rowH + (maxLines - 1) * 4.5 : rowH;
+      }
+      // Bottom line
       doc.line(ml, y, pw - mr, y);
+      
+      // Vertical lines
+      for (let c = 0; c < xCols.length; c++) {
+        doc.line(xCols[c], tblY, xCols[c], y);
+      }
+      
+      y += 8;
+
+      // Payment Details Table
+      addText('Payment Details', ml, y, { style: 'bold', size: 10 });
+      y += 4;
+
+      const bankTblY = y;
+      const bankData = [
+        ['New Zealand Bank Details', 'Indian Bank Details'],
+        ['Account Name: THE ULTIMATE HUNTING SAFARIS LTD', 'Account Name: JOSEMON JACOB'],
+        ['Bank: ANZ', 'Bank: South Indian Bank\nBranch Name: MUTTOM'],
+        ['Account Number: 06-0709-0972990-00', 'Account Number: 0822050000000037'],
+        ['SWIFT/IFSC: ANZBNZ22', 'IFSC: SIBL0000822']
+      ];
+
+      doc.setDrawColor(100);
+      doc.setLineWidth(0.2);
+
+      const bCols = [ml, ml + cw/2, pw - mr];
+      
+      for (let r = 0; r < bankData.length; r++) {
+        doc.line(ml, y, pw - mr, y);
+        
+        doc.setFont('helvetica', (r === 0) ? 'bold' : 'normal');
+        doc.setFontSize(9);
+        
+        let maxLines = 1;
+        
+        for (let c = 0; c < 2; c++) {
+          const rawLines = bankData[r][c].split('\n');
+          let finalLines = [];
+          rawLines.forEach(rl => {
+             const sl = doc.splitTextToSize(rl, (cw/2) - 4);
+             finalLines.push(...sl);
+          });
+          maxLines = Math.max(maxLines, finalLines.length);
+          
+          finalLines.forEach((line, idx) => {
+            doc.text(line, bCols[c] + 2, y + 5.5 + (idx * 4.5));
+          });
+        }
+        
+        y += (maxLines > 1) ? 8 + (maxLines - 1) * 4.5 : 8;
+      }
+      doc.line(ml, y, pw - mr, y); // bottom line
+      
+      // vertical lines
+      doc.line(bCols[0], bankTblY, bCols[0], y);
+      doc.line(bCols[1], bankTblY, bCols[1], y);
+      doc.line(bCols[2], bankTblY, bCols[2], y);
+      
       y += 10;
-
-      // Bill To
-      addText('Bill To:', ml, y, { style: 'bold', size: 9 });
-      y += 6;
-      
-      const drawBillLine = (yPos) => {
-        doc.setDrawColor(0); doc.setLineWidth(0.3);
-        doc.line(ml + 30, yPos + 1, ml + 30 + metaLineLen, yPos + 1);
-      };
-
-      addText('Client Name:', ml, y, { size: 9 });
-      addText(data.clientName, ml + 30, y, { size: 9 }); drawBillLine(y); y += 6;
-      
-      addText('Passport Number:', ml, y, { size: 9 });
-      addText(data.passport || '', ml + 30, y, { size: 9 }); drawBillLine(y); y += 6;
-      
-      addText('Address:', ml, y, { size: 9 });
-      addText(data.address || '', ml + 30, y, { size: 9 }); drawBillLine(y); y += 12;
-
-      // Financials Table
-      const tX1 = ml;
-      const tX2 = ml + cw * 0.65;
-      const tX3 = pw - mr;
-      
-      // Draw table borders
-      doc.setDrawColor(150); doc.setLineWidth(0.3);
-      doc.line(tX1, y - 5, tX3, y - 5);
-      
-      const formatCurrency = (val) => Number(val).toLocaleString('en-US', { minimumFractionDigits: 2 });
-
-      addText('Total Hunting Trip Cost:', tX1, y, { size: 9 });
-      addText('USD ' + formatCurrency(data.totalCost), tX2, y, { size: 9 });
-      doc.setDrawColor(0); doc.setLineWidth(0.2); doc.line(tX2, y + 1, tX3, y + 1);
-      y += 8;
-
-      addText('Advance Payment Received:', tX1, y, { size: 9 });
-      addText('USD ' + formatCurrency(data.advance), tX2, y, { size: 9 });
-      doc.line(tX2, y + 1, tX3, y + 1);
-      y += 8;
-
-      addText('Remaining Balance Due:', tX1, y, { size: 9 });
-      addText('USD ' + formatCurrency(data.balance), tX2, y, { size: 9 });
-      doc.line(tX2, y + 1, tX3, y + 1);
-      y += 8;
-
-      addText('Balance Due Date:', tX1, y, { size: 9 });
-      addText(data.dueDate || '', tX2, y, { size: 9 });
-      doc.line(tX2, y + 1, tX3, y + 1);
-      y += 5;
-      
-      doc.setDrawColor(150); doc.setLineWidth(0.3);
-      doc.line(tX1, y, tX3, y);
-      y += 10;
-
-      // Description
-      addText('Description:', ml, y, { style: 'bold', size: 9 });
-      y += 5;
-      y = addWrappedText(data.desc || '', ml, y, cw, { size: 9 });
-      y += 6;
 
       // Policies
-      addText('Cancellation Policy:', ml, y, { style: 'bold', size: 9 });
-      y += 5;
-      y = addWrappedText('Advance payments are strictly non-refundable. In the event of cancellation by the client for any reason, the deposit will be forfeited.', ml, y, cw, { size: 9 });
+      addText('Booking, Cancellation & Rescheduling Policy', ml, y, { style: 'bold', size: 11 });
       y += 6;
+      
+      const policies = [
+        'A non-refundable deposit secures your booking.',
+        'Your booking is confirmed upon receipt of the deposit.',
+        'One complimentary reschedule is permitted if requested at least 60 days before your scheduled arrival, subject to availability.',
+        'If unforeseen circumstances beyond your control (including government travel restrictions, war, disease outbreaks, natural disasters, or major airline disruptions) prevent your safari, we will happily transfer your deposit to new safari dates, subject to availability, and work with you to reschedule your adventure.'
+      ];
+      
+      policies.forEach(p => {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        const lines = doc.splitTextToSize('• ' + p, cw);
+        lines.forEach(line => {
+          doc.text(line, ml, y);
+          y += 4.5;
+        });
+        y += 1.5;
+      });
 
-      addText('Rescheduling Policy:', ml, y, { style: 'bold', size: 9 });
       y += 5;
-      y = addWrappedText('Rescheduling requests are subject to availability and must be made in writing at least 30 days prior to the scheduled hunt. Approved rescheduled bookings may transfer the deposit to a new agreed date within the same calendar year.', ml, y, cw, { size: 9 });
+      
+      addText('Thank you for choosing Ultimate Hunting Safaris Ltd.', ml, y, { font: 'helvetica', style: 'bolditalic', size: 10 });
+      y += 5;
+      addText('We look forward to providing you with a world-class hunting experience.', ml, y, { font: 'helvetica', style: 'italic', size: 9 });
 
       // Save
       const fileName = `Invoice_${data.clientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
