@@ -434,24 +434,119 @@
     }
 
     /* Billing page */
-    .billing-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px }
-    .billing-form .field { margin-bottom: 0 }
-    .billing-form .full-width { grid-column: 1 / -1 }
-    .billing-actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap }
-    .billing-actions .btn { flex: none }
-    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border) }
-    .btn-secondary:hover { border-color: var(--accent); color: var(--accent) }
-    .history-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px }
-    .history-table th, .history-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border) }
-    .history-table th { color: var(--text2); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600 }
-    .history-table tr:hover td { background: var(--surface2) }
-    .history-table .btn { padding: 6px 12px; font-size: 11px }
-    .contract-preview { background: #fff; color: #000; padding: 40px; margin-top: 16px; font-family: 'Times New Roman', serif; font-size: 13px; line-height: 1.6; max-height: 500px; overflow-y: auto; border: 1px solid var(--border) }
-    .contract-preview h2 { text-align: center; font-size: 16px; margin-bottom: 20px }
-    .billing-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px }
-    .billing-stat { background: var(--surface); border: 1px solid var(--border); padding: 20px; text-align: center }
-    .billing-stat .stat-num { font-size: 28px; font-weight: 700; color: var(--accent) }
-    .billing-stat .stat-label { font-size: 11px; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px }
+    .billing-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px
+    }
+
+    .billing-form .field {
+      margin-bottom: 0
+    }
+
+    .billing-form .full-width {
+      grid-column: 1 / -1
+    }
+
+    .billing-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap
+    }
+
+    .billing-actions .btn {
+      flex: none
+    }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border)
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent)
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 13px
+    }
+
+    .history-table th,
+    .history-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .history-table th {
+      color: var(--text2);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600
+    }
+
+    .history-table tr:hover td {
+      background: var(--surface2)
+    }
+
+    .history-table .btn {
+      padding: 6px 12px;
+      font-size: 11px
+    }
+
+    .contract-preview {
+      background: #fff;
+      color: #000;
+      padding: 40px;
+      margin-top: 16px;
+      font-family: 'Times New Roman', serif;
+      font-size: 13px;
+      line-height: 1.6;
+      max-height: 500px;
+      overflow-y: auto;
+      border: 1px solid var(--border)
+    }
+
+    .contract-preview h2 {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 20px
+    }
+
+    .billing-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px
+    }
+
+    .billing-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+      text-align: center
+    }
+
+    .billing-stat .stat-num {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent)
+    }
+
+    .billing-stat .stat-label {
+      font-size: 11px;
+      color: var(--text2);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 4px
+    }
 
     /* Responsive */
     @media(max-width:768px) {
@@ -478,8 +573,13 @@
         padding: 20px
       }
 
-      .billing-form { grid-template-columns: 1fr }
-      .billing-stats { grid-template-columns: 1fr }
+      .billing-form {
+        grid-template-columns: 1fr
+      }
+
+      .billing-stats {
+        grid-template-columns: 1fr
+      }
     }
   </style>
 </head>
@@ -510,7 +610,8 @@
       <a href="#" data-page="about"><span class="material-symbols-outlined">info</span> About</a>
       <a href="#" data-page="contact"><span class="material-symbols-outlined">mail</span> Contact</a>
       <a href="#" data-page="global"><span class="material-symbols-outlined">settings</span> Global</a>
-      <a href="#" data-page="billing" style="border-top:1px solid var(--border);margin-top:8px;padding-top:20px"><span class="material-symbols-outlined">receipt_long</span> Billing</a>
+      <a href="#" data-page="billing" style="border-top:1px solid var(--border);margin-top:8px;padding-top:20px"><span
+          class="material-symbols-outlined">receipt_long</span> Billing</a>
       <a href="#" onclick="logout()" style="margin-top:auto;color:var(--danger)"><span
           class="material-symbols-outlined">logout</span> Logout</a>
     </nav>
@@ -864,10 +965,10 @@
         formData.append('file', file);
         formData.append('directory', 'photo_gallery');
         showToast(`Uploading ${file.name}...`);
-        
+
         // Generate an immediate local preview URL
         const tempUrl = URL.createObjectURL(file);
-        
+
         try {
           const res = await fetch('/api/upload', {
             method: 'POST',
@@ -877,10 +978,10 @@
           const data = await res.json();
           if (res.ok) {
             contentData.images = contentData.images || [];
-            contentData.images.push({ 
-              src: data.path, 
-              colSpan: 4, 
-              height: 400, 
+            contentData.images.push({
+              src: data.path,
+              colSpan: 4,
+              height: 400,
               effect: 'none',
               _tempUrl: tempUrl // inject local preview URL
             });
@@ -945,8 +1046,27 @@
               <label>Deposit (USD)</label>
               <input id="bill-advance" placeholder="e.g. 1300" type="number" />
             </div>
-
-
+            <div class="field">
+              <label>Balance Remaining (USD)</label>
+              <input id="bill-balance" placeholder="e.g. 2600" type="number" />
+            </div>
+            <div class="field full-width">
+              <label style="margin-bottom: 12px;">Payment Status</label>
+              <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; text-transform: none; letter-spacing: normal; font-size: 13px; cursor: pointer; color: var(--text);">
+                  <input type="checkbox" id="bill-status-deposit" style="width: auto; margin: 0;">
+                  Deposit Received
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; text-transform: none; letter-spacing: normal; font-size: 13px; cursor: pointer; color: var(--text);">
+                  <input type="checkbox" id="bill-status-partial" style="width: auto; margin: 0;">
+                  Partial Payment
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; text-transform: none; letter-spacing: normal; font-size: 13px; cursor: pointer; color: var(--text);">
+                  <input type="checkbox" id="bill-status-full" style="width: auto; margin: 0;">
+                  Paid in Full
+                </label>
+              </div>
+            </div>
           </div>
           <div class="billing-actions">
             <button class="btn btn-primary" onclick="generateContractPDF()">
@@ -987,6 +1107,10 @@
       document.getElementById('bill-address').value = '';
       document.getElementById('bill-totalCost').value = '';
       document.getElementById('bill-advance').value = '';
+      document.getElementById('bill-balance').value = '';
+      document.getElementById('bill-status-deposit').checked = false;
+      document.getElementById('bill-status-partial').checked = false;
+      document.getElementById('bill-status-full').checked = false;
     }
 
 
@@ -1287,7 +1411,7 @@
           addText(sec.title, ml, y, { font: 'helvetica', style: 'bold', size: 10 });
           y += 5;
         }
-        
+
         if (sec.content) {
           sec.content.forEach(item => {
             checkPage(15);
@@ -1348,10 +1472,15 @@
       const address = document.getElementById('bill-address').value.trim();
       const invNumber = document.getElementById('bill-invNumber').value.trim();
       const issueDateVal = document.getElementById('bill-date').value;
-      const totalCost = document.getElementById('bill-totalCost').value.trim() || '0';
-      const advance = document.getElementById('bill-advance').value.trim() || '0';
-      const balance = (parseFloat(totalCost) - parseFloat(advance)).toString();
-      
+      const totalCost = document.getElementById('bill-totalCost').value.trim();
+      const advance = document.getElementById('bill-advance').value.trim();
+      const balance = document.getElementById('bill-balance').value.trim();
+
+      const paymentStatuses = [];
+      if (document.getElementById('bill-status-deposit').checked) paymentStatuses.push('Deposit Received');
+      if (document.getElementById('bill-status-partial').checked) paymentStatuses.push('Partial Payment');
+      if (document.getElementById('bill-status-full').checked) paymentStatuses.push('Paid in Full');
+
       const issueDate = formatDateShort(issueDateVal) || formatDateShort(new Date());
       const huntDates = buildHuntDatesShort();
 
@@ -1361,7 +1490,7 @@
       }
 
       const invData = {
-        type: 'invoice', clientName, passport, address, invNumber, issueDate, totalCost, advance, balance, huntDates, createdAt: new Date().toISOString()
+        type: 'invoice', clientName, passport, address, invNumber, issueDate, totalCost, advance, balance, huntDates, paymentStatuses, createdAt: new Date().toISOString()
       };
 
       await buildInvoicePDF(invData);
@@ -1423,31 +1552,31 @@
       addText('LUXURY SAFARI INVOICE', ml, y, { font: 'helvetica', style: 'bold', size: 12 });
       y += 10;
 
-      const formatCurrency = (val) => val.toString();
+      const formatCurrency = (val) => val ? val.toString() : '';
       const tblY = y;
       const rowH = 10;
-      
+
       const gridData = [
         ['Invoice No.', data.invNumber || '', 'Trip Dates', data.huntDates || ''],
         ['Client', data.clientName || '', 'Passport', data.passport || ''],
-        ['Destination', data.address || '', 'Package Price', 'USD' + formatCurrency(data.totalCost)],
-        ['Deposit', 'USD' + formatCurrency(data.advance), 'Balance Due', 'USD' + formatCurrency(data.balance)]
+        ['Destination', data.address || '', 'Package Price', data.totalCost ? 'USD ' + formatCurrency(data.totalCost) : ''],
+        ['Deposit', data.advance ? 'USD ' + formatCurrency(data.advance) : '', 'Balance Due', data.balance ? 'USD ' + formatCurrency(data.balance) : '']
       ];
 
       doc.setDrawColor(100);
       doc.setLineWidth(0.2);
 
       const xCols = [ml, ml + 30, ml + 75, ml + 105, pw - mr];
-      
+
       for (let r = 0; r < gridData.length; r++) {
         // Horizontal line top
         doc.line(ml, y, pw - mr, y);
-        
+
         let rowData = gridData[r];
         let maxLines = 1;
-        
-        const colW = [xCols[1]-xCols[0]-4, xCols[2]-xCols[1]-4, xCols[3]-xCols[2]-4, xCols[4]-xCols[3]-4];
-        
+
+        const colW = [xCols[1] - xCols[0] - 4, xCols[2] - xCols[1] - 4, xCols[3] - xCols[2] - 4, xCols[4] - xCols[3] - 4];
+
         for (let c = 0; c < 4; c++) {
           doc.setFont('helvetica', (c === 0 || c === 2) ? 'bold' : 'normal');
           doc.setFontSize(10);
@@ -1457,17 +1586,17 @@
             doc.text(line, xCols[c] + 2, y + 6.5 + (idx * 4.5));
           });
         }
-        
+
         y += (maxLines > 1) ? rowH + (maxLines - 1) * 4.5 : rowH;
       }
       // Bottom line
       doc.line(ml, y, pw - mr, y);
-      
+
       // Vertical lines
       for (let c = 0; c < xCols.length; c++) {
         doc.line(xCols[c], tblY, xCols[c], y);
       }
-      
+
       y += 8;
 
       // Payment Details Table
@@ -1486,52 +1615,52 @@
       doc.setDrawColor(100);
       doc.setLineWidth(0.2);
 
-      const bCols = [ml, ml + cw/2, pw - mr];
-      
+      const bCols = [ml, ml + cw / 2, pw - mr];
+
       for (let r = 0; r < bankData.length; r++) {
         doc.line(ml, y, pw - mr, y);
-        
+
         doc.setFont('helvetica', (r === 0) ? 'bold' : 'normal');
         doc.setFontSize(9);
-        
+
         let maxLines = 1;
-        
+
         for (let c = 0; c < 2; c++) {
           const rawLines = bankData[r][c].split('\n');
           let finalLines = [];
           rawLines.forEach(rl => {
-             const sl = doc.splitTextToSize(rl, (cw/2) - 4);
-             finalLines.push(...sl);
+            const sl = doc.splitTextToSize(rl, (cw / 2) - 4);
+            finalLines.push(...sl);
           });
           maxLines = Math.max(maxLines, finalLines.length);
-          
+
           finalLines.forEach((line, idx) => {
             doc.text(line, bCols[c] + 2, y + 5.5 + (idx * 4.5));
           });
         }
-        
+
         y += (maxLines > 1) ? 8 + (maxLines - 1) * 4.5 : 8;
       }
       doc.line(ml, y, pw - mr, y); // bottom line
-      
+
       // vertical lines
       doc.line(bCols[0], bankTblY, bCols[0], y);
       doc.line(bCols[1], bankTblY, bCols[1], y);
       doc.line(bCols[2], bankTblY, bCols[2], y);
-      
+
       y += 10;
 
       // Policies
       addText('Booking, Cancellation & Rescheduling Policy', ml, y, { style: 'bold', size: 11 });
       y += 6;
-      
+
       const policies = [
         'A non-refundable deposit secures your booking.',
         'Your booking is confirmed upon receipt of the deposit.',
         'One complimentary reschedule is permitted if requested at least 60 days before your scheduled arrival, subject to availability.',
         'If unforeseen circumstances beyond your control (including government travel restrictions, war, disease outbreaks, natural disasters, or major airline disruptions) prevent your safari, we will happily transfer your deposit to new safari dates, subject to availability, and work with you to reschedule your adventure.'
       ];
-      
+
       policies.forEach(p => {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
@@ -1544,7 +1673,47 @@
       });
 
       y += 5;
-      
+
+      if (data.paymentStatuses && data.paymentStatuses.length > 0) {
+        // Payment Status Section
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text('Payment Status', ml, y);
+        y += 6;
+
+        const statuses = [
+          'Deposit Received',
+          'Partial Payment',
+          'Paid in Full'
+        ];
+
+        doc.setFont('helvetica', 'normal');
+        statuses.forEach(status => {
+          // Draw checkbox
+          doc.setDrawColor(0);
+          doc.setLineWidth(0.3);
+          doc.rect(ml, y - 3, 4, 4);
+
+          // If checked
+          if (data.paymentStatuses && data.paymentStatuses.includes(status)) {
+            doc.setLineWidth(0.6);
+            doc.line(ml + 0.8, y - 1, ml + 1.8, y + 0.2);
+            doc.line(ml + 1.8, y + 0.2, ml + 3.2, y - 2.2);
+          }
+
+          doc.text(status, ml + 7, y);
+          y += 6;
+        });
+
+        if (data.balance) {
+          doc.text(`Balance Remaining: $${data.balance}`, ml, y);
+          y += 6;
+        }
+
+        y += 4;
+      }
+
+      if (y > 270) { doc.addPage(); y = 25; }
       addText('Thank you for choosing Ultimate Hunting Safaris Ltd.', ml, y, { font: 'helvetica', style: 'bolditalic', size: 10 });
       y += 5;
       addText('We look forward to providing you with a world-class hunting experience.', ml, y, { font: 'helvetica', style: 'italic', size: 9 });
